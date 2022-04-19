@@ -6,20 +6,20 @@ gbif_dataset = 'https://api.gbif.org/v1/dataset/search'
 gbif_specimen = 'https://www.gbif.org/api/occurrence/breakdown'
 
 
-def gather_datasets():
+def gather_datasets() -> dict:
     """ Searches in GBIF for the number of datasets belonging to DiSSCo and saves this
         Uses the number to iterate through the datasets, adding up the total per country
         Saves the data in the global 'data' dict
     """
 
     # Data definition
-    total_datasets = {
+    total_datasets: dict = {
         'total': 0,
         'countries': {}
     }
 
     # Initial query for dataset count
-    query = {'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655', 'limit': 1}
+    query: dict = {'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655', 'limit': 1}
     response = requests.get(gbif_dataset, params=query).json()
 
     total_datasets['total'] = response['count']
@@ -42,7 +42,7 @@ def gather_datasets():
     return total_datasets
 
 
-def gather_specimens():
+def gather_specimens() -> dict:
     """ Searches in GBIF for the number of specimens belonging to DiSSCo and saves this
         Filters the results based on the basis of record property and orders by country
         Uses this data to iterate through the countries to calculate their specimen total
@@ -51,14 +51,14 @@ def gather_specimens():
     """
 
     # Data definition
-    total_specimens = {
+    total_specimens: dict = {
         'total': {},
         'countries': {}
     }
 
     # Gather number of specimens per publishing country and filtered on basis of record
     basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
-    query = {
+    query: dict = {
         'basis_of_record': basis_of_record,
         'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
         'advanced': True,
@@ -89,7 +89,7 @@ def gather_specimens():
     return total_specimens
 
 
-def gather_issues_flags():
+def gather_issues_flags() -> dict:
     """ Searches in GBIF for the number of publishing countries belonging to DiSSCo
         Iterates through this data to call on the issues and flags belonging to each country
         Finally calculates the totals per issue or flag from a country
@@ -97,12 +97,12 @@ def gather_issues_flags():
     """
 
     # Data definition
-    issues_and_flags = {
+    issues_and_flags: dict = {
         'total': 0, 'countries': {}
     }
 
     # Gather all publishing countries of DiSSCo
-    query = {
+    query: dict = {
         'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
         'advanced': True,
         'dimension': 'publishing_country',

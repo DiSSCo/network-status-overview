@@ -2,59 +2,24 @@ import csv
 import main
 
 
-# Possible list for indexing issues and flags
-# Needs to be extracted from GBIF instead of hard coded
-issues_and_flags_list = [
-    'Institution match fuzzy',
-    'Collection match none',
-    'Geodetic datum assumed WGS84',
-    'Coordinate rounded',
-    'Taxon match higherrank',
-    'Recorded date invalid',
-    'Country derived from coordinates',
-    'Institution match none',
-    'Institution collection mismatch',
-    'Collection match fuzzy',
-    'Taxon match none',
-    'Taxon match fuzzy',
-    'Country invalid',
-    'Country coordinate mismatch',
-    'Ambiguous institution',
-    'Type status invalid',
-    'Multimedia URI invalid',
-    'Geodetic datum invalid',
-    'Presumed negated longitude',
-    'Presumed swapped coordinate',
-    'Recorded date unlikely',
-    'Presumed negated latitude',
-    'Zero coordinate',
-    'Coordinate uncertainty metres invalid',
-    'Elevation non numeric',
-    'Elevation min/max swapped',
-    'Coordinate out of range',
-    'Basis of record invalid',
-    'Identified date unlikely',
-    'Coordinate reprojected',
-    'Coordinate precision invalid',
-    'Occurrence status inferred from individual count',
-    'Occurrence status unparsable',
-    'Individual count invalid',
-    'Coordinate invalid',
-    'Continent invalid',
-    'Depth min/max swapped',
-    'Multimedia date invalid',
-    'Country mismatch',
-    'Occurrence status inferred from basis of record',
-    'Individual count conflicts with occurrence status',
-    'Depth unlikely',
-    'Recorded date mismatch',
-    'Modified date unlikely',
-    'Elevation not metric',
-    'Different owner institution',
-    'Footprint SRS invalid',
-    'Coordinate reprojection failed',
-    'Footprint WKT invalid'
-]
+def create_issues_and_flags_list() -> list:
+    """ Takes the csv containing the names of all issues and converts it to a list
+        :return: Returns the issues and flags list
+    """
+
+    issues_file = 'csv_files/GBIF_issues.csv'
+    issues_and_flags_list = []
+
+    with open(issues_file, 'r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        next(reader)
+
+        for row in reader:
+            issue_flag = row[1].lower().replace('_', ' ').capitalize()
+
+            issues_and_flags_list.append(issue_flag)
+
+    return issues_and_flags_list
 
 
 def write_datasets_to_csv(total_datasets: dict):
@@ -133,6 +98,9 @@ def write_issues_and_flags_to_csv(issues_and_flags: dict):
         :return: Writes a csv
     """
 
+    # Receiving issues and flags
+    issues_and_flags_list = create_issues_and_flags_list()
+
     # Preparing basic csv
     headers = ['Origin', 'Total']
     values = {
@@ -185,7 +153,87 @@ def write_issues_and_flags_to_csv(issues_and_flags: dict):
             writer.writerow(v)
 
 
+def write_issues_and_flags_monthly(issues_and_flags: dict):
+    """ Let's the user choose a country code and writes the monthly progress of issues and flags to csv
+        :param issues_and_flags: Dict of global data variable containing total issues and flags per country
+        :return: Writes a csv
+    """
+
+    # Choose country code (later to be automized)
+    country = ""
+
+    while country not in issues_and_flags['countries']:
+        country = input("Please insert a valid country code: ")
+
+    country_data = issues_and_flags['countries'][country]
+
+    # Receiving issues and flags
+    issues_and_flags_list = create_issues_and_flags_list()
+
+    # Setting months and basic csv
+    months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+    ]
+    headers = ['Origin', 'Total'] + months
+    values = {
+        'Total': ['Total', country_data['total']]
+    }
+
+    # Preparing monthly count
+    month_count: dict = {}
+
+    # Iterate through issues and flags
+    for issue_flag in issues_and_flags_list:
+        values[issue_flag] = [issue_flag]
+
+        # If country has issue / flag add total to values
+        if country_data.get(issue_flag):
+            # Total
+            values[issue_flag].append(country_data[issue_flag]['total'])
+
+            # Per month
+            i = 1
+            for _ in months:
+                values[issue_flag].append(country_data[issue_flag]['monthly_progress'][i])
+
+                # Updating month total
+                if i in month_count:
+                    month_count[i] += country_data[issue_flag]['monthly_progress'][i]
+                else:
+                    month_count[i] = country_data[issue_flag]['monthly_progress'][i]
+
+                i += 1
+
+    # Set overall monthly totals
+    for i in range(12):
+        i += 1
+        values['Total'].append(month_count[i])
+
+    # Write to issues_and_flags_monthly.csv
+    csv_file = 'csv_files/issues_and_flags_monthly.csv'
+
+    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(headers)
+
+        for v in values.values():
+            writer.writerow(v)
+
+
 # Call on functions
 # write_datasets_to_csv(main.gather_datasets())
 # write_specimens_to_csv(main.gather_specimens())
 # write_issues_and_flags_to_csv(main.gather_issues_flags())
+write_issues_and_flags_monthly(main.gather_issues_flags())
