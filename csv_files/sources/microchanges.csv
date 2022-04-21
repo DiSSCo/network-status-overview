@@ -1,0 +1,205 @@
+COUNTRY,MOU SIGNATORY,"MOU Signatory '?' or 'n'
+child of a MOU parent ?
+  - NO = not child
+  - CHILD OF XXX",Organization,ROR Organization Name,ROR ID,IDENTIFY PARENT ROR or 'NEW',GBIF PUBLISHER NAME,GBIF PUBLISHER ID,ADDITIONAL GBIF PUBLISHER IDs,CHECKED,COMMENTS,totalRecords,preservedSpecimen,fossilSpecimen,unknown,livingSpecimen,materialSample,humanObservation,observation,machineObservation ,literature
+Austria,y,,Natural History Museum Vienna,Naturhistorisches Museum,01tv5y993,,"Natural History Museum, Vienna - Herbarium W",4e11d750-bafb-11d9-8e53-b8a03c50a862,,FALSE,,300548,295604,0,0,0,0,4944,0,0,0
+Austria,n,,Biology Centre of Upper Austria State Museums,,,,Biologiezentrum Linz Oberoesterreich,2d6e0e40-2aee-11d8-aa2d-b8a03c50a862,,FALSE,"Parent: Upper Austrian State Museums. Siblings: State Gallery Linz; Linz Castle Museum. The Upper Austrian State Museum is a cultural institution of the State of Upper Austria . It consists of three main locations in Linz - the FC - Francisco Carolinum, the Castle Museum and the Biology Center - as well as several museums, memorials and collections throughout the state of Upper Austria. ",2243034,0,0,2243034,0,0,0,0,0,0
+Belgium,y,,Meise Botanic Garden,Meise Botanic Garden,01h1jbk91,,Botanic Garden Meise,a344ee9f-f1b7-4761-be2c-58ee6d741395,,FALSE,,2988983,1816141,0,2677,22580,9040,1132011,0,6534,0
+Belgium,y,,Royal Belgian Institute of Natural Sciences,Royal Belgian Institute of Natural Sciences,02y22ws83,,Royal Belgian Institute of Natural Sciences,e88c96a3-5884-4e51-a580-e417ca4c9eed,,FALSE,,528813,522857,5350,0,0,0,606,0,0,0
+Belgium,y,,Royal Museum for Central Africa,Royal Museum for Central Africa,001805t51,,"Royal Museum for Central Africa, Belgium",575c52b0-a742-11db-a6ff-b8a03c50a862,,FALSE,,15544,15363,0,181,0,0,0,0,0,0
+Belgium,y,,Flemish Research Institute for Nature and Forest (INBO),Research Institute for Nature and Forest,00j54wy13,,Research Institute for Nature and Forest (INBO),1cd669d0-80ea-11de-a9d0-f1765f95f18b,,FALSE,,374530,2126,0,0,0,0,372404,0,0,0
+Belgium,y,,Royal Zoological Society of Antwerp,Royal Zoological Society of Antwerp,00ed5y156,,,,,FALSE,,,,,,,,,,,
+Belgium,y,,"Université Libre de Bruxelles, Herbarium",Université Libre de Bruxelles,01r9htc13,,Université Libre de Bruxelles (ULB),https://www.gbif.org/publisher/576f00f2-c26c-41f7-991e-a37e07cbd3ec,,TRUE,,,,,,,,,,,
+Belgium,y,,University of Namur,University of Namur,03d1maw17,,Université de Namur Département de Biologie,96fbb73b-f951-4659-8f8b-fa60624a9c28,,FALSE,,48387,48387,0,0,0,0,0,0,0,0
+Belgium,y,,Flanders Marine Institute,Flanders Marine Institute,0496vr396,,Flanders Marine Institute,2089ce96-4fb5-4a20-999c-3ccf45a27a4d,,FALSE,,22828,0,0,18337,0,0,4491,0,0,0
+Belgium,y,,CETAF,,0058ctf29,,,,,FALSE,,,,,,,,,,,
+Bulgaria,y,,"Bulgarian Academy of Sciences, Institute of Biodiversity and Ecosystem Research",Institute of Biodiversity and Ecosystem Research,03eywck07,,,,,FALSE,,,,,,,,,,,
+Bulgaria,y,,National Museum of Natural History,National Museum of Natural History,04a4v0j95,,,,,FALSE,,,,,,,,,,,
+Czech Republic,y,,"Charles University, Faculty of Science",Charles University,024d6js02,,,,,FALSE,,,,,,,,,,,
+Czech Republic,y,,"Institute of Botany, The Czech Academy of Sciences",Institute of Botany,03qqnc658,,,,,FALSE,,,,,,,,,,,
+Czech Republic,y,,"Institute of Vertebrate Biology, The Czech Academy of Sciences, Czech Republic",Institute of Vertebrate Biology,05bcgdd94,,,,,FALSE,,,,,,,,,,,
+Czech Republic,y,,"National Museum, Prague",Národní muzeum,04z6gwv56,,National Museum in Prague,17e8fde5-9144-49c8-a893-87138e95b0b7,,FALSE,,10521,1996,0,8525,0,0,0,0,0,0
+Czech Republic,y,,Nature Conservation Agency of the Czech Republic,Nature Conservation Agency of the Czech Republic,036ak4h42,,,,,FALSE,,,,,,,,,,,
+Czech Republic,y,,Masaryk University,Masaryk University,02j46qs45,,"Masaryk University, Department of Botany and Zoology",9a4467a2-eccd-4aa7-bb6d-aea3a31f2a2c,,FALSE,,149789,149703,0,0,0,0,86,0,0,0
+Czech Republic,n,,CENIA - Czech Environmental Information Agency,Czech Environmental Information Agency,00xh22n12,,,,,FALSE,,,,,,,,,,,
+Denmark,Y,,Natural History Museum of Denmark,Natural History Museum of Denmark,,035b05819,Natural History Museum of Denmark,2e7df380-8356-4533-bcb3-5459e23c794e,,FALSE,used to have its own ROR: 040ck2b86,99346,46837,0,0,0,50161,2348,0,0,0
+Denmark,?,,"Zoological Museum, Natural History Museum of Denmark",,,,"Zoological Museum, Natural History Museum of Denmark",456058db-f70b-4005-97ad-e08570cf0c56,,FALSE,Nowadays part of the Natural History Museum of Denmark. No longer an independent entity and should be removed from the list. ,202598,153906,0,0,0,0,48692,0,0,0
+Denmark,?,,"Botanical Garden & Museum, Natural History Museum of Denmark",,,,"Botanical Garden & Museum, Natural History Museum of Denmark",ba482b53-07ed-4ca4-8981-5396d1a8a6fc,,FALSE,Nowadays part of the Natural History Museum of Denmark. No longer an independent entity and should be removed from the list. ,216534,206446,0,230,52,814,1053,7939,0,0
+Denmark,N,CHILD OF Natural History Museum of Denmark (ror:040ck2b86),"Copenhagen Bird Ringing Centre, Natural History Museum of Denmark",,,040ck2b86,"Copenhagen Bird Ringing Centre, Natural History Museum of Denmark",d779fbe1-5e62-48cc-8de4-098fddf50cb1,,FALSE,"Exists as separate entity under NHMD and is also partnered with the Institute for Bioscience, Aarhus University (ror:01aj84f44) and the Danish Ministry of Environment (ror:05sdke129). ",480819,0,0,0,0,0,480819,0,0,0
+Denmark,y,,Naturhistorisk Museum Aarhus,Natural History Museum Aarhus,0166x0j30,,,,,TRUE,"We apply to ROR to have the name amended to Natural History Museum Aarhus, and are working on getting a GBIF publisher name",,,,,,,,,,
+Denmark,y,,Aarhus University,Aarhus University,01aj84f44,,"Department of Biology, Aarhus University",8e1a7b73-e746-4d20-a0ba-e647ce0f9784,,TRUE,"The GBIF publisher name: Department of Bioscience, Aarhus University should be changed to: Department of Biology, Aarhus University",1661270,1504,0,0,0,0,1659766,0,0,0
+Denmark,?,,"Danish Centre for Environment and Energy, Aarhus University",,,,"Danish Centre for Environment and Energy, Aarhus University",1a127d84-5508-4307-be4b-04e0b71eb113,,FALSE,,45872,0,0,0,0,0,45872,0,0,0
+Denmark,Y,,Aarhus University,Aarhus Universitet,01aj84f44,,Herbarium of the University of Aarhus,8e1a97a0-3ca8-11d9-8439-b8a03c50a862,,TRUE,,111529,111529,0,0,0,0,0,0,0,0
+Estonia,y,,Estonian Museum of Natural History,Estonian Academy of Sciences,01pewsd85,,PlutoF,0870a77b-587c-4369-a8ed-bc3d347b8e1c,,FALSE,,3253084,1378907,0,137879,0,6483,1322719,0,407096,0
+Estonia,y,,Estonian University of Life Sciences,Estonian University of Life Sciences,00s67c790,,,,,FALSE,,,,,,,,,,,
+Estonia,y,,Tallinn University of Technology,Tallinn University of Technology,0443cwa12,,Geocollections of Estonia,70488160-b003-11d8-a8af-b8a03c50a862,,FALSE,,185734,0,185734,0,0,0,0,0,0,0
+Estonia,y,,University of Tartu,University of Tartu,03z77qz90,,,,,FALSE,,,,,,,,,,,
+Finland,y,,Finnish Museum of Natural History - LUOMUS,Finnish Museum of Natural History,03tcx6c30,,Finnish Biodiversity Information Facility,04fd2e13-6881-4e5c-9dd1-8fdd9ab993c1,,FALSE,,28247041,1019839,0,0,0,0,27227202,0,0,0
+Finland,y,,"Biodiversity Unit, University of Oulu",University of Oulu,03yj89h83,,University of Oulu,d1146fd8-35d2-4264-a569-8f88cc29d0c8,,FALSE,,59630,59630,0,0,0,0,0,0,0,0
+Finland,y,,"Biodiversity Unit, University of Turku",University of Turku,05vghhr25,,University of Turku,3ee55840-1f1d-11d8-a2da-b8a03c50a862,,FALSE,,20199,0,0,13054,0,0,0,6992,0,153
+Finland,n,,"Digitarium, University of Eastern Finland",University of Eastern Finland,00cyydd11,,Digitarium,1eacbaf3-ce23-4cfb-98d5-a51a7a574562,,FALSE,,1197,1197,0,0,0,0,0,0,0,0
+Finland,y,NO,Kuopio Natural History Museum,Kuopio natural history museum,,NEW,Kuopio Natural History Museum,7f65a925-b9ce-4c1c-9d9f-5d32c4e76ae1,,TRUE,,3637,3637,0,0,0,0,0,0,0,0
+Finland,y,,"Open Science Centre / Museum, University of Jyväskylä",University of Jyväskylä,05n3dz165,,Jyväskylä University Museum - The Section of Natural Sciences,ff3a2000-b2ac-11db-b710-b8a03c50a862,,FALSE,,104129,102194,0,0,0,0,0,1935,0,0
+France,y,,National Museum of Natural History,National Museum of Natural History,03wkt5x30,,MNHN - Museum national d'Histoire naturelle,2cd829bb-b713-433d-99cf-64bef11e5b3e,,FALSE,,945661,945661,0,0,0,0,0,0,0,0
+France,n,,"UMS PatriNat (OFB-CNRS-MNHN), Paris",,,,"UMS PatriNat (OFB-CNRS-MNHN), Paris",1928bdf0-f5d2-11dc-8c12-b8a03c50a862,,FALSE,,658165,9,0,0,0,0,658156,0,0,0
+France,y,,Centre de coopération internationale en recherche agronomique pour le développement,Centre de Coopération Internationale en Recherche Agronomique pour le Développement,05kpkpg04,,RECOLNAT,02fce6f4-8dcd-4eaf-afe9-28ba30822751,,FALSE,,239483,239483,0,0,0,0,0,0,0,0
+France,n,,French Agricultural Research Centre for International Development,,,,CIRAD SELMET,48adce57-6a8c-49a0-ba35-1adeafc19839,,FALSE,,342698,0,0,0,0,0,342698,0,0,0
+France,n,,Centre for Biology and management of Populations,,,,"CBGP (UMR INRA, Cirad, IRD, Montpellier SupAgro)",0d3422a3-d9fa-4dac-8921-3e03afc4c0a0,,FALSE,,6812,5649,0,1163,0,0,0,0,0,0
+France,y,,Centre Informatique National de l’Enseignement Supérieur,National Computer Center for Higher Education,00gnrwz95,,,,,FALSE,,,,,,,,,,,
+France,y,,Nancy Museum-Aquarium,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Conservatoire botanique national Alpin,,,,Conservatoire Botanique National Alpin,8d8c424d-9ab0-4b82-811e-900577f93f66,,FALSE,,6238,6238,0,0,0,0,0,0,0,0
+France,y,,Institut Recherche et Développement,Institut de Recherche pour le Développement,05q3vnk25,,IRD - Institute of Research for Development,3b5161b7-9831-4444-9822-a60df4df107d,,FALSE,,229546,42449,0,0,0,0,187097,0,0,0
+France,y,,Sorbonne University,Sorbonne University,02en5vm52,,,,,FALSE,,,,,,,,,,,
+France,y,,La Société National des Sciences Naturelles et Mathématiques de Cherbourg,,,,Société des Sciences Naturelles et Mathématiques de Cherbourg,dca4d666-c9e0-4712-b658-0d1bc3f39d48,,FALSE,,47242,47242,0,0,0,0,0,0,0,0
+France,y,,Le Jardin Botanique de la Ville de Lyon,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Muséum d’histoire naturelle de La Rochelle,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Muséum d’histoire naturelle Philadelphe-Thomas de Gaillac,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Tela Botanica,,,,Tela Botanica,b2dbd210-90c2-11df-86a3-b8a03c50a862,,FALSE,,607399,0,0,0,0,0,607399,0,0,0
+France,y,,Université Claude-Bernard Lyon 1,Claude Bernard University Lyon 1,029brtt94,,,,,FALSE,,,,,,,,,,,
+France,y,,Université Clermont Auvergne,University of Clermont Auvergne,01a8ajp46,,,,,FALSE,,,,,,,,,,,
+France,y,,Université de Bourgogne,University of Burgundy,03k1bsr36,,,,,FALSE,,,,,,,,,,,
+France,y,,Université de Montpellier,University of Montpellier,051escj72,,"Herbarium of Université de Montpellier 2, Institut de Botanique",2853c0e7-c758-4c9c-83a2-7c2d18967fb9,,FALSE,,1317325,1317325,0,0,0,0,0,0,0,0
+France,y,,Université de Rennes 1,University of Rennes 1,015m7wh34,,Geosciences Rennes UMR 6118 Université Rennes 1,6a3befbc-cc8a-4be0-92ee-d4872b1dfd7c,,FALSE,,55484,0,55484,0,0,0,0,0,0,0
+France,?,,"Biological Field Station of Paimpont, University Rennes 1",,,,"Biological Field Station of Paimpont, University Rennes 1",957ac1e0-0765-4004-bc68-20f3534211b2,,FALSE,,6087,128,0,0,0,0,5955,0,4,0
+France,y,,Université de Strasbourg,University of Strasbourg,00pg6eq24,,Université de Strasbourg,a6de8f30-d931-11db-973c-b8a03c50a862,,FALSE,,74734,74734,0,0,0,0,0,0,0,0
+France,y,,Université de Toulouse III-Paul Sabatier,Paul Sabatier University,02v6kpv12,,,,,FALSE,,,,,,,,,,,
+France,y,,Université Lille 1 – Sciences et technologies,University of Lille,02kzqn938,,,,,FALSE,,,,,,,,,,,
+France,y,,Muséum d’histoire naturelle de Dijon,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Muséum d’histoire naturelle de Marseille,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Muséum d’histoire naturelle de Toulouse,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Musée d’histoire naturelle de Lille,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Université Aix-Marseille,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Université de Grenoble,,,,,,,FALSE,,,,,,,,,,,
+France,y,,Université de Lorraine,,,,,,,FALSE,,,,,,,,,,,
+Germany,y,,Bavarian Natural History Collections,Bavarian Natural History Collections,05th1v540,,Staatliche Naturwissenschaftliche Sammlungen Bayerns,0674aea0-a7e1-11d8-9534-b8a03c50a862,,FALSE,,7178392,43326,0,0,67,0,7134999,0,0,0
+Germany,y,,Berlin Natural History Museum,Museum für Naturkunde,052d1a351,,Museum für Naturkunde Berlin,10980920-6dad-11da-ad13-b8a03c50a862,,FALSE,,604022,51828,500808,25496,0,0,25890,0,0,0
+Germany,y,,Botanic Garden and Botanical Museum Berlin,Botanischer Garten und Botanisches Museum Berlin,00bv4cx53,,Botanic Garden and Botanical Museum Berlin,57254bd0-8256-11d8-b7ed-b8a03c50a862,,TRUE,"We requested an englisch primary institution name as well as a german version as ""other"" name.",75238,73882,0,8,0,0,1348,0,0,0
+Germany,y,,Senckenberg Society for Nature Research,Senckenberg Nature Research Society,00xmqmx64,,Senckenberg,c76cf030-2a95-11da-9cc1-b8a03c50a862,,FALSE,,178707,43567,7597,0,0,0,127543,0,0,0
+Germany,y,,Zoological Research Museum Alexander Koenig,Zoological Research Museum Alexander Koenig,00wz4b049,,Zoologisches Forschungsinstitut und Museum Alexander Koenig,6e1cad80-bdf5-11d8-84ea-b8a03c50a862,,FALSE,,247882,79919,0,0,0,0,0,167963,0,0
+Germany,y,,Stuttgart State Museum of Natural History,Staatliches Museum für Naturkunde Stuttgart,05k35b119,,Staatliches Museum für Naturkunde Stuttgart,99ea0c90-61e5-11dc-a64c-b8a03c50a862,,FALSE,,,,,,,,,,,
+Germany,y,,NORe. CeNaK - Centre of Natural History - University of Hamburg,Universität Hamburg,00g30e956,,Herbarium Hamburgense,f739aef0-8a5b-11d9-bc8d-b8a03c50a862,,FALSE,,40531,38536,0,1995,0,0,0,0,0,0
+Germany,n,,NORe. German Oceanographic Museum Stralsund,German Oceanographic Museum,05hkycn11,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. Müritzeum,,,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. Museum of Nature and Environment Lübeck,,,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. Natural History Museum Namu Bielefeld,,,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. State Museum Nature and Man Oldenburg,,,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. State Museum of Natural History Braunschweig,Staatliches Naturhistorisches Museum,03ae9x524,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. Übersee – Museum of Bremen,Overseas Museum,00cx3rx26,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. Zoological Collection of the University of Rostock,University of Rostock,03zdwsf69,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. Zoological Institute and Museum Greifswald,,,,,,,FALSE,,,,,,,,,,,
+Germany,n,,NORe. Zoological Museum Kiel,,,,,,,FALSE,,,,,,,,,,,
+Greece,y,,Natural History Museum of Crete,University of Crete,00dr28g20,,,,,FALSE,,,,,,,,,,,
+Greece,y,,"Mineralogy and Petrology Museum, National and Kapodistrian University of Athens",National and Kapodistrian University of Athens,04gnjpq42,,,,,FALSE,,,,,,,,,,,
+Greece,y,,"Museum of Geology and Palaeontology, National and Kapodistrian University of Athens",National and Kapodistrian University of Athens,04gnjpq42,,,,,FALSE,,,,,,,,,,,
+Greece,y,,"Museum of Zoology, National and Kapodistrian University of Athens",National and Kapodistrian University of Athens,04gnjpq42,,,,,FALSE,,,,,,,,,,,
+Greece,y,,"Botanical Museum, National and Kapodistrian University of Athens",National and Kapodistrian University of Athens,04gnjpq42,,,,,FALSE,,,,,,,,,,,
+Greece,y,,Zoological Museum of the University of Patras,University of Patras,017wvtq80,,,,,FALSE,,,,,,,,,,,
+Greece,y,,"Department of Geology, University of Patras",University of Patras,017wvtq80,,,,,FALSE,,,,,,,,,,,
+Greece,y,,Botanical Museum of the University of Patras,University of Patras,017wvtq80,,,,,FALSE,,,,,,,,,,,
+Greece,y,,Museum of Zoology of the Aristotle University of Thessaloniki,Aristotle University of Thessaloniki,02j61yw88,,,,,FALSE,,,,,,,,,,,
+Greece,y,,Goulandris Natural History Museum,Goulandris Natural History Museum,032qvyh31,,,,,FALSE,,,,,,,,,,,
+Greece,y,,Mediterranean Agronomic Institute of Chania,,01pbz7c04,,,,,FALSE,,,,,,,,,,,
+Greece,y,,"Museum of Palaeontology, Aristotle University of Thessaloniki",,02j61yw88,,,,,FALSE,,,,,,,,,,,
+Greece,y,,Natural History Museum of the Lesvos Petrified Forest,,,,,,,FALSE,,,,,,,,,,,
+Hungary,y,,Hungarian Natural History Museum,Hungarian Natural History Museum,04y1zat75,,Hungarian Natural History Museum,be11c6a0-7cf5-11dc-92cb-b8a03c50a862,,FALSE,,107580,0,0,107580,0,0,0,0,0,0
+Italy,n,,Natural History Museum of Genova,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,"Natural History Museum, University of Florence",University of Florence,04jr1s763,,,,,FALSE,,,,,,,,,,,
+Italy,y,,National Academy of Sciences,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,Italian National Academy of Entomology,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,Italian Botanical Society,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,Italian Geological Society,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,Italian Palaeontological Society,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,Italian Society of Biogeography,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,National Association of Science Museums,,,,,,,FALSE,,,,,,,,,,,
+Italy,y,,National Research Council (DSSTTA),,,,,,,FALSE,,,,,,,,,,,
+Luxembourg,y,,Natural History Museum of Luxembourg,Musée National d'Histoire Naturelle,05natt857,,"National Museum of Natural History, Luxembourg",75642970-f855-11dd-8235-b8a03c50a862,,FALSE,now waiting for change of ROR to english version to align with GBIF publisher name which hast just been changed,1843532,60841,12758,0,0,0,1769933,0,0,0
+Netherlands,y,,Naturalis Biodiversity Center,Naturalis Biodiversity Center,0566bfb96,,Naturalis Biodiversity Center,396d5f30-dea9-11db-8ab4-b8a03c50a862,,TRUE,,6207142,5837493,0,369649,0,0,0,0,0,0
+Netherlands,y,,Natural History Museum Rotterdam,Natural History Museum Rotterdam,01s8f2180,,Natural History Museum Rotterdam,3ead5cf3-2840-482e-bbd9-76380825be63,,FALSE,,456167,291683,29158,0,0,0,135326,0,0,0
+Netherlands,y,,Natuurhistorisch Museum Maastricht,,0488nj033,,Natural History Museum Maastricht,01d38e13-944c-4f4b-96a2-25ecf1751140,,TRUE,,,,,,,,,,,
+Netherlands,y,,NIOZ Royal Netherlands Institute for Sea Research,Royal Netherlands Institute for Sea Research,01gntjh03,,NIOZ Royal Netherlands Institute for Sea Research,5ed21d03-f836-45bd-a554-0a4791108798,,TRUE,Checked on 01 Oct 2021 by T.F. de Bruin (NIOZ),273002,0,0,0,0,0,273002,0,0,0
+Netherlands,y,,Stichting De Bastei (Natuurmuseum Nijmegen),,04y2aw426,,Nijmegen Natural History Museum,16fd28c4-e4be-40e5-a551-139e573cfe68,,TRUE,"We were already waiting for a ROR. I also filled out the form Request New ROR, to be sure.",33116,33116,0,0,0,0,0,0,0,0
+Netherlands,y,,Stichting Museon,Museon,03scjwb12,,Museon,67d0a68e-90b4-4760-9269-49e80e017e10,,FALSE,,,,,,,,,,,
+Netherlands,y,,Stichting De MuseumFabriek,,,NEW,Museum TwentseWelle,b5c52395-a611-4ddf-991f-8ae596558b32,,FALSE,,3925,0,3925,0,0,0,0,0,0,0
+Netherlands,y,,"Teylers Museum, Haarlem",Teylers Museum,01f0ym620,,,,,TRUE,Completed on 08-10-2021 by Tim de Zeeuw ,,,,,,,,,,
+Netherlands,y,,NLBIF - Naturalis Biodiversity Center,,,0566bfb96,Netherlands Biodiversity Information Facility (NLBIF),cace8d10-2646-11d8-a2da-b8a03c50a862,,TRUE,,,,,,,,,,,
+Netherlands,y,,University of Amsterdam,University of Amsterdam,04dkp9463,,University of Amsterdam / IBED,1f55bd0a-6ebe-49a1-8a9c-9258702b6f46,,FALSE,,74512,1706,0,0,0,0,72806,0,0,0
+Netherlands,y,,Universiteits Museum Utrecht,Utrecht University,,04pp8hn57,University Museum Utrecht (UMU),63f34ebe-232f-4da8-b0de-94fb75ac749f,,FALSE,,,,,,,,,,,
+Netherlands,y,,Westerdijk Fungal Biodiversity Institute,Westerdijk Fungal Biodiversity Institute,030a5r161,,CBS Fungal Biodiversity Centre,6a430540-7f09-11d8-a1a0-b8a03c50a862,,FALSE,,49459,0,0,0,49459,0,0,0,0,0
+Netherlands,y,,Natuurmuseum Brabant,Natural History Museum Brabant,04py0zz23,,Natuurmuseum Brabant,84834ee7-dc9f-4085-abee-13fa7bb47c7d ,,TRUE,,,,,,,,,,,
+Netherlands,y,,Natuurmuseum Fryslân,,,,,,,FALSE,,,,,,,,,,,
+Norway,y,,Natural History Museum - University of Oslo,University of Oslo,01xtthb56,,University of Oslo,f314b0b0-e3dc-11d9-8d81-b8a03c50a862,,TRUE,,315831,101997,0,2180,2327,209108,219,0,0,0
+Norway,y,,Tromsø Museum,University of Tromsø - The Arctic University of Norway,00wge5k78,,UiT The Arctic University of Norway,689b40c4-ff31-4cd0-83a5-a7a828f1cd92,,TRUE,,,,,,,,,,,
+Norway,y,,NTNU University Museum,Norwegian University of Science and Technology,05xg72x27,,Norwegian University of Science and Technology,a8144f37-5ff7-4137-9400-94b5b2ea4ec4,,TRUE,,808505,645347,0,0,0,1008,162150,0,0,0
+Norway,y,,University Museum of Bergen,University of Bergen,03zga2b32,,University of Bergen,3f3967bf-ecc7-4455-ba89-4e0ab6d6fd3c,,TRUE,,4406,0,0,0,0,0,4406,0,0,0
+Poland,y,,Museum And Institute of Zoology - Polish Academy of Sciences,Museum and Institute of Zoology,00r9k8q20,,"Museum and Institute of Zoology, Polish Academy of Sciences",e147be40-75eb-11d9-b257-b8a03c50a862,,FALSE,,90636,90636,0,0,0,0,0,0,0,0
+Poland,y,,The University of Warsaw,University of Warsaw,039bjqg32,,"University of Warsaw, Białowieża Geobotanical Station of the Biological Faculty",85f9aba0-af9d-11db-ad75-b8a03c50a862,,FALSE,,21718,21718,0,0,0,0,0,0,0,0
+Poland, ?,,"Warsaw University of Life Sciences, Fac. Horticulture and Landscape Architecture, Dept. of Applied Entomology",,,,"Warsaw University of Life Sciences, Fac. Horticulture and Landscape Architecture, Dept. of Applied Entomology",ac2273c0-0516-11db-a8cf-b8a03c50a862,,FALSE,,2324,597,0,0,0,0,1727,0,0,0
+Poland,?,,"University of Warsaw, Botanic Garden",,,,"University of Warsaw, Botanic Garden",e2475770-5046-11da-8af1-b8a03c50a862,,FALSE,,8436,5538,0,0,2898,0,0,0,0,0
+Portugal,y,,"National Museum of Natural History and Science, University of Lisbon (MUHNAC – Ulisboa)",University of Lisbon,01c27hj86,,"National Museum of Natural History and Science, University of Lisbon",315127e0-d7bb-11db-9885-b8a03c50a862,,FALSE,,72505,72505,0,0,0,0,0,0,0,0
+Portugal,y,,Science Museum of the University of Coimbra (MUC – UC),University of Coimbra,04z8k9a98,,,,,FALSE,,,,,,,,,,,
+Portugal,y,,"Natural History and Science Museum, University of Porto (MHNC – UP)",University of Porto,043pwc612,,Natural History and Science Museum of the University of Porto (MHNC-UP),707f5e4c-ae29-4013-bc49-409e44f95243,,FALSE,,9837,9837,0,0,0,0,0,0,0,0
+Portugal,?,,Botanical Garden of the University of Coimbra (JBUC),University of Coimbra,04z8k9a98,,Herbarium of University of Coimbra (COI),d86a72a1-368c-42f3-ad96-9661523a716b,,FALSE,,92374,92374,0,0,0,0,0,0,0,0
+Slovakia,y,,"Plant Science and Biodiversity Centre, Slovak Academy of Sciences, Institute of Botany",Institute of Botany,00ayvpa66,,INSTITUTE OF BOTANY S.A.S.,e2ce7dc0-a8b5-11d8-9534-b8a03c50a862,,FALSE,,125351,125351,0,0,0,0,0,0,0,0
+Slovakia,y,,Pavol Jozef Šafárik University in Košice,University of Pavol Jozef Šafárik,39965637,,,,,FALSE,,,,,,,,,,,
+Slovakia,?,,Comenius University in Bratislava - Department of Botany,Comenius University,0587ef340,,,,,FALSE,,,,,,,,,,,
+Slovakia,?,,Comenius University in Bratislava - Department of Zoology,Comenius University,0587ef340,,,,,FALSE,,,,,,,,,,,
+Slovakia,y,,Comenius University,Comenius University,0587ef340,,,,,FALSE,,,,,,,,,,,
+Slovakia,?,,Slovak Academy of Sciences - Institute of Zoology,Institute of Zoology,05tm6j853,,,,,FALSE,,,,,,,,,,,
+Slovakia,n,,Slovak National Museum - Museum of National History,Slovak National Museum,04sy3cj85,,,,,FALSE,,,,,,,,,,,
+Spain,y,CHILD of Spanish National Research Council (02gfc7t72),National Museum of Natural Sciences (CSIC-MNCN),Museo Nacional de Ciencias Naturales,02v6zg374,,Spanish National Museum of Natural Sciences (CSIC),3059a14b-7b43-41ce-beef-873999911dfe,,FALSE,,343668,316317,0,0,0,409,26942,0,0,0
+Spain,n,CHILD of Spanish National Research Council (02gfc7t72),Royal Botanic Garden of Madrid (CSIC-RJB),Real Jardín Botánico,03ezemd27,,CSIC-Real Jardín Botánico,0363cbd4-f666-455e-8e86-0bbddcf51950,,FALSE,,2695869,920633,0,5796,0,0,1769440,0,0,0
+Spain,y,CHILD of Spanish National Research Council (02gfc7t72),Instituto Geológico y Minero de España (IGME),Instituto Geológico y Minero de España,04cadha73,,,,,FALSE,,,,,,,,,,,
+Spain,y,,The Universidad de Navarra (UNAV),University of Navarra,02rxc7m23,,University of Navarra – Department of Environmental Biology,2f390a80-56f3-11da-880b-b8a03c50a862,,FALSE,,395126,281397,0,202,0,0,113527,0,0,0
+Spain,y,,Universidad Complutense de Madrid (UCM),Complutense University of Madrid,02p0gd045,,,,,FALSE,,,,,,,,,,,
+Sweden,y,,Swedish Museum of Natural History,Swedish Museum of Natural History,05k323c76,,Swedish Museum of Natural History,6ba9a8cc-513a-4a51-bf93-6f5de8040a96,,TRUE,,409740,332821,73974,0,0,0,2945,0,0,0
+Sweden,y,,Bergius Foundation,,,,,,,FALSE,,,,,,,,,,,
+Sweden,y,,"Biological Museum, Lund University","Biological Museum, Lund University",048555y32,,"Two GBIF publishers, as listed below",,,TRUE,"Complicated situation as the museum is part of the Department of Biology, Lund University, but has been behaving independently for a long time. The GrSciColl registry has now been updated on GBIF:  https://www.gbif.org/grscicoll/institution/13edc77b-7023-4ddd-89c7-d883a480b294",449434,0,0,0,0,0,449434,0,0,0
+Sweden,y,"child of Biological Museum, Lund University",Lund Botanical Museum (LD),,,,Lund Botanical Museum (LD),883ee5d0-9177-423d-a636-0284e8a4de46,,TRUE,Lund Botanical Museum and Lund Museum of Zoology were combined into the Biological Museum in 2002,1073352,1073352,0,0,0,0,0,0,0,0
+Sweden,y,"child of Biological Museum, Lund University",Lund Museum of Zoology,,,,Lund Museum of Zoology (MZLU),ee6a779a-dce6-4f16-ae3d-84f495def86e,,TRUE,Lund Botanical Museum and Lund Museum of Zoology were combined into the Biological Museum in 2002,168838,168838,0,0,0,0,0,0,0,0
+Sweden,y,,Gothenburg Botanic Garden,,035tz7392,,Gothenburg Botanical Garden (GBG),ea05dcbd-0d05-4785-9313-0ec68cb90426,,TRUE,,,,,,,,,,,
+Sweden,y,,University of Gothenburg,University of Gothenburg,01tm6cn81,,University of Gothenburg,0ed04352-6745-4665-9e11-7117ee91a96b,,TRUE,,,,,,,,,,,
+Sweden,y,,"Department of Ecology and Environmental Science, Umeå University",Umeå University,05kb8h459,,Umeå University,065e3c2a-35f3-44f6-9ae0-ee5d1f19eec5,,TRUE,,172421,0,0,0,0,0,172421,0,0,0
+Sweden,y,,"Uppsala University, Museum of Evolution",Uppsala University,048a87296,,,,,FALSE,,,,,,,,,,,
+Sweden,y,,Gothenburg Natural History Museum,Gothenburg Natural History Museum,01yhex183,,Gothenburg Natural History Museum (GNM),45e5c621-df96-4ea7-bbc6-aa3e53b90bb8,,FALSE,,102526,102526,0,0,0,0,0,0,0,0
+United Kingdom,y,,Natural History Museum London,Natural History Museum,039zvsn29,,Natural History Museum,19456090-b49a-11d8-abeb-b8a03c50a862,,FALSE,,4191262,4191262,0,0,0,0,0,0,0,0
+United Kingdom,y,,Royal Botanic Garden Edinburgh,Royal Botanic Garden Edinburgh,0349vqz63,,Royal Botanic Garden Edinburgh,98e934b0-5f31-11de-b67e-b8a03c50a862,,FALSE,,1009860,903681,0,0,106179,0,0,0,0,0
+United Kingdom,y,,"Royal Botanic Gardens, Kew",Royal Botanic Gardens,00ynnr806,,"Royal Botanic Gardens, Kew",061b4f20-f241-11da-a328-b8a03c50a862,,FALSE,,1015334,1014976,0,0,0,0,0,358,0,0
+United Kingdom,n,,National Museums Scotland,National Museums Scotland,00pxfwe85,,National Museums Scotland,7fd3bb3f-217b-467e-a1de-d15a04d0b874,,FALSE,,104,104,0,0,0,0,0,0,0,0
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,76865134,25644425,874788,2937986,183562,277023,46348376,185187,413634,153
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,"instn codes in gbif and ROR, enter gbif instn code or change it in ROR",,,,,,,,,,,,,,,,,,

@@ -1,5 +1,5 @@
 import csv
-import main
+import main_GBIF
 
 
 def create_issues_and_flags_list() -> list:
@@ -7,7 +7,7 @@ def create_issues_and_flags_list() -> list:
         :return: Returns the issues and flags list
     """
 
-    issues_file = 'csv_files/GBIF_issues.csv'
+    issues_file = 'csv_files/sources/GBIF_issues.csv'
     issues_and_flags_list = []
 
     with open(issues_file, 'r', newline='', encoding='utf-8') as file:
@@ -38,7 +38,7 @@ def write_datasets_to_csv(total_datasets: dict):
         values.append(total_datasets['countries'][country])
 
     # Write to datasets.csv
-    csv_file = 'csv_files/datasets.csv'
+    csv_file = 'csv_files/written/datasets.csv'
 
     with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
@@ -81,7 +81,7 @@ def write_specimens_to_csv(total_specimens: dict):
         values[country].insert(1, str(country_total))
 
     # Write to specimens.csv
-    csv_file = 'csv_files/specimens.csv'
+    csv_file = 'csv_files/written/specimens.csv'
 
     with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
@@ -142,7 +142,7 @@ def write_issues_and_flags_to_csv(issues_and_flags: dict):
         values['Total'].append(issue_totals[issue_total])
 
     # Write to issues_and_flags.csv
-    csv_file = 'csv_files/issues_and_flags.csv'
+    csv_file = 'csv_files/written/issues_and_flags.csv'
 
     with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
@@ -153,7 +153,7 @@ def write_issues_and_flags_to_csv(issues_and_flags: dict):
             writer.writerow(v)
 
 
-def write_issues_and_flags_monthly(issues_and_flags: dict):
+def write_issues_and_flags_monthly_to_csv(issues_and_flags: dict):
     """ Let's the user choose a country code and writes the monthly progress of issues and flags to csv
         :param issues_and_flags: Dict of global data variable containing total issues and flags per country
         :return: Writes a csv
@@ -221,7 +221,115 @@ def write_issues_and_flags_monthly(issues_and_flags: dict):
         values['Total'].append(month_count[i])
 
     # Write to issues_and_flags_monthly.csv
-    csv_file = 'csv_files/issues_and_flags_monthly.csv'
+    csv_file = 'csv_files/written/issues_and_flags_monthly.csv'
+
+    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(headers)
+
+        for v in values.values():
+            writer.writerow(v)
+
+
+def write_institution_to_csv():
+    """ Receives data from the institution function in main.py
+        Calls on related functions to write the data to csv
+        :return: Calls on: write_institution_to_csv_totals and write_institution_to_csv_issues_and_flags
+    """
+
+    # Get data
+    publishers = main.get_institutions_data()
+
+    # Write csv files
+    write_institutions_to_csv_totals(publishers)
+    write_institutions_to_csv_issues_and_flags(publishers)
+
+
+def write_institutions_to_csv_totals(publishers: dict):
+    """ Prepares data from publishers dictionary and writes this to csv
+        Data handled are: total datasets and basis of record
+        :param publishers: Dict of GBIF publishers from DiSSCo network and related data
+        :return: Writes a csv
+    """
+
+    # Preparing basic csv
+    basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
+    headers = [
+        'Publisher',
+        'GBIF id',
+        'ROR id',
+        'Total datasets'
+    ] + basis_of_record
+    values: dict = {}
+
+    for publisher in publishers:
+        publisher = publishers[publisher]
+
+        # Append meta data
+        values[publisher['gbif_id']] = [
+            publisher['name'],
+            publisher['gbif_id'],
+            publisher['ror_id'],
+            publisher['totals']['datasets']
+        ]
+
+        for bor in basis_of_record:
+            values[publisher['gbif_id']].append(publisher['totals'][bor])
+
+    print(values)
+
+    # Write to publishers_total.csv
+    csv_file = "csv_files/written/publishers.csv"
+
+    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(headers)
+
+        for v in values.values():
+            writer.writerow(v)
+
+
+def write_institutions_to_csv_issues_and_flags(publishers: dict):
+    """ Prepares data from publishers dictionary and writes this to csv
+        Data handled are: issues and flags (total)
+        :param publishers: Dict of GBIF publishers from DiSSCo network and related data
+        :return: Writes a csv
+    """
+
+    # Receiving issues and flags
+    issues_and_flags_list = create_issues_and_flags_list()
+
+    # Preparing basic csv
+    headers = ['Publisher', 'Total'] + issues_and_flags_list
+    values: dict = {}
+
+    for publisher in publishers:
+        publisher = publishers[publisher]
+
+        print(publisher)
+
+        # Inserting values
+        values[publisher['gbif_id']] = [
+            publisher['name']
+        ]
+
+        # Issues and flags
+        publisher_issue_flag_total = 0
+
+        for issue_flag in issues_and_flags_list:
+            if publisher['issues_and_flags'].get(issue_flag):
+                values[publisher['gbif_id']].append(publisher['issues_and_flags'][issue_flag]['total'])
+
+                publisher_issue_flag_total += publisher['issues_and_flags'][issue_flag]['total']
+            else:
+                values[publisher['gbif_id']].append(0)
+
+        values[publisher['gbif_id']].insert(1, publisher_issue_flag_total)
+
+    # Write to publishers_issues_flags.csv
+    csv_file = "csv_files/written/publishers_issues_flags.csv"
 
     with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
@@ -236,4 +344,5 @@ def write_issues_and_flags_monthly(issues_and_flags: dict):
 # write_datasets_to_csv(main.gather_datasets())
 # write_specimens_to_csv(main.gather_specimens())
 # write_issues_and_flags_to_csv(main.gather_issues_flags())
-write_issues_and_flags_monthly(main.gather_issues_flags())
+# write_issues_and_flags_monthly_to_csv(main.gather_issues_flags())
+# write_institution_to_csv()

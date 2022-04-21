@@ -1,7 +1,10 @@
 import requests
+import csv
 
 
 # Defining GBIF endpoints
+network_key = '17abcf75-2f1e-46dd-bf75-a5b21dd02655'
+gbif_institution = 'https://api.gbif.org/v1/network/' + network_key
 gbif_dataset = 'https://api.gbif.org/v1/dataset/search'
 gbif_specimen = 'https://www.gbif.org/api/occurrence/breakdown'
 
@@ -42,11 +45,14 @@ def gather_datasets() -> dict:
     return total_datasets
 
 
+gather_datasets()
+
+
 def gather_specimens() -> dict:
     """ Searches in GBIF for the number of specimens belonging to DiSSCo and saves this
         Filters the results based on the basis of record property and orders by country
         Uses this data to iterate through the countries to calculate their specimen total
-        Finally categorizes these totals using basis of record
+        Finally, categorizes these totals using basis of record
         Saves the data in the global 'data' dict
     """
 
@@ -92,7 +98,7 @@ def gather_specimens() -> dict:
 def gather_issues_flags() -> dict:
     """ Searches in GBIF for the number of publishing countries belonging to DiSSCo
         Iterates through this data to call on the issues and flags belonging to each country
-        Finally calculates the totals per issue or flag from a country
+        Finally, calculates the totals per issue or flag from a country
         Saves the data in the global 'data' dict
     """
 
@@ -152,3 +158,93 @@ def gather_issues_flags() -> dict:
                 m += 1
 
     return issues_and_flags
+
+
+# Function could be divided into separate functions
+# Publishers replace institutions until further notice
+def get_institutions_data() -> dict:
+    """ Questions GBIF API and requests data from publishers within the DiSSCo network
+        Handles the data and reforms these to a usable format
+        :return publishers: A dict of the refined data
+    """
+
+    # List all datasets of DiSSCo network and filter on publishing organisations
+    query: dict = {'limit': 1000}
+    response = requests.get(gbif_institution + '/constituents', params=query).json()
+
+    publishers: dict = {}
+
+    # Iterate through datasets to count total per publisher
+    for dataset in response['results']:
+        if not publishers.get(dataset['publishingOrganizationKey']):
+            publishers[dataset['publishingOrganizationKey']] = {
+                'gbif_id': dataset['publishingOrganizationKey'],
+                'totals': {
+                    'datasets': 1
+                }
+            }
+
+        # Add up to total datasets
+        publishers[dataset['publishingOrganizationKey']]['totals']['datasets'] += 1
+
+    # Match GBIF publishers with their ROR id from DiSSCo spreadsheet
+    csv_file = "csv_files/sources/microchanges.csv"
+
+    with open(csv_file, 'r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        next(reader)
+
+        for row in reader:
+            for publisher in publishers:
+                if publisher in row:
+                    publishers[publisher]['name'] = row[3]
+                    publishers[publisher]['ror_id'] = row[5]
+
+    # Calculate metrics for basis of record per publisher and issues/flags
+    basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
+    query = {
+        'network_key': network_key,
+        'basis_of_record': basis_of_record,
+        'advanced': True,
+        'dimension': 'publishingOrg',
+        'secondDimension': 'basis_of_record',
+        'limit': 1000,
+        'offset': 0
+    }
+    response = requests.get(gbif_specimen, params=query).json()
+
+    for publisher in response['results']:
+        i = 0
+
+        # Basis of record
+        for boc in basis_of_record:
+            publishers[publisher['filter']['publishing_org']]['totals'][boc] = publisher['values'][i]
+            i += 1
+
+        # While looping for publisher, find issues and flags
+        query = {
+            'network_key': network_key,
+            'publishingOrg': publisher['filter']['publishing_org'],
+            'advanced': True,
+            'dimension': 'issue',
+            'secondDimension': 'month',
+            'limit': 1000,
+            'offset': 0
+        }
+        response = requests.get(gbif_specimen, params=query).json()
+
+        # Set issues and flags values
+        publishers[publisher['filter']['publishing_org']]['issues_and_flags'] = {}
+
+        for issue_flag in response['results']:
+
+            publishers[publisher['filter']['publishing_org']]['issues_and_flags'][issue_flag['displayName']] \
+                = {'total': issue_flag['count'], 'monthly_progress': []}
+
+            for i in range(12):
+                publishers[publisher['filter']['publishing_org']]['issues_and_flags'][issue_flag['displayName']]['monthly_progress'].append(issue_flag['values'][i])
+
+    return publishers
+
+
+get_institutions_data()
