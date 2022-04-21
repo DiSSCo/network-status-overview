@@ -245,6 +245,3 @@ def get_institutions_data() -> dict:
                 publishers[publisher['filter']['publishing_org']]['issues_and_flags'][issue_flag['displayName']]['monthly_progress'].append(issue_flag['values'][i])
 
     return publishers
-
-
-get_institutions_data()
