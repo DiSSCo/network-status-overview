@@ -1,7 +1,7 @@
 import csv
-import main_GBIF
 
 
+# GBIf functions
 def create_issues_and_flags_list() -> list:
     """ Takes the csv containing the names of all issues and converts it to a list
         :return: Returns the issues and flags list
@@ -44,6 +44,8 @@ def write_datasets_to_csv(total_datasets: dict):
         writer = csv.writer(file)
 
         writer.writerows([headers, values])
+
+    return csv_file
 
 
 def write_specimens_to_csv(total_specimens: dict):
@@ -90,6 +92,8 @@ def write_specimens_to_csv(total_specimens: dict):
 
         for v in values.values():
             writer.writerow(v)
+
+    return csv_file
 
 
 def write_issues_and_flags_to_csv(issues_and_flags: dict):
@@ -151,6 +155,8 @@ def write_issues_and_flags_to_csv(issues_and_flags: dict):
 
         for v in values.values():
             writer.writerow(v)
+
+    return csv_file
 
 
 def write_issues_and_flags_monthly_to_csv(issues_and_flags: dict):
@@ -231,19 +237,22 @@ def write_issues_and_flags_monthly_to_csv(issues_and_flags: dict):
         for v in values.values():
             writer.writerow(v)
 
+    return csv_file
 
-def write_institution_to_csv():
+
+def write_institution_to_csv(publishers: dict):
     """ Receives data from the institution function in main.py
         Calls on related functions to write the data to csv
         :return: Calls on: write_institution_to_csv_totals and write_institution_to_csv_issues_and_flags
     """
 
-    # Get data
-    publishers = main.get_institutions_data()
-
     # Write csv files
-    write_institutions_to_csv_totals(publishers)
-    write_institutions_to_csv_issues_and_flags(publishers)
+    csv_file = ""
+
+    csv_file += write_institutions_to_csv_totals(publishers)
+    csv_file += 'and: ' + write_institutions_to_csv_issues_and_flags(publishers)
+
+    return csv_file
 
 
 def write_institutions_to_csv_totals(publishers: dict):
@@ -277,8 +286,6 @@ def write_institutions_to_csv_totals(publishers: dict):
         for bor in basis_of_record:
             values[publisher['gbif_id']].append(publisher['totals'][bor])
 
-    print(values)
-
     # Write to publishers_total.csv
     csv_file = "csv_files/written/publishers.csv"
 
@@ -289,6 +296,8 @@ def write_institutions_to_csv_totals(publishers: dict):
 
         for v in values.values():
             writer.writerow(v)
+
+    return csv_file
 
 
 def write_institutions_to_csv_issues_and_flags(publishers: dict):
@@ -307,8 +316,6 @@ def write_institutions_to_csv_issues_and_flags(publishers: dict):
 
     for publisher in publishers:
         publisher = publishers[publisher]
-
-        print(publisher)
 
         # Inserting values
         values[publisher['gbif_id']] = [
@@ -339,10 +346,44 @@ def write_institutions_to_csv_issues_and_flags(publishers: dict):
         for v in values.values():
             writer.writerow(v)
 
+    return csv_file
 
-# Call on functions
-# write_datasets_to_csv(main.gather_datasets())
-# write_specimens_to_csv(main.gather_specimens())
-# write_issues_and_flags_to_csv(main.gather_issues_flags())
-# write_issues_and_flags_monthly_to_csv(main.gather_issues_flags())
-# write_institution_to_csv()
+
+# GeoCASe functions
+def write_geocase_data_to_csv(geocase_data: dict):
+    """ Takes the total geocase_data dict and writes it to csv
+        :param geocase_data: Dict of global data variable containing total datasets per country
+        and record basis
+        :return: Writes a csv
+    """
+
+    # Preparing basic csv
+    headers = ['Origin', 'Total']
+    values: dict = {
+        'total': ['Total']
+    }
+
+    # Appending headers and total values
+    for total in geocase_data['total']:
+        if not total == "specimens":
+            headers.append(total)
+
+        values['total'].append(geocase_data['total'][total])
+
+    # Appending country values
+    for country in geocase_data['countries']:
+        values[country] = [country]
+        values[country] += [v for v in geocase_data['countries'][country].values()]
+
+    # Write to publishers_issues_flags.csv
+    csv_file = "csv_files/written/geocase_data.csv"
+
+    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(headers)
+
+        for v in values.values():
+            writer.writerow(v)
+
+    return csv_file

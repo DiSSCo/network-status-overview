@@ -1,5 +1,4 @@
 import requests
-import csv
 
 
 geocase_endpoint = "https://geocase.eu/api"
@@ -76,44 +75,3 @@ def gather_data() -> dict:
         i += 1
 
     return geocase_data
-
-
-def write_to_csv(geocase_data: dict):
-    """ Takes the total geocase_data dict and writes it to csv
-        :param geocase_data: Dict of global data variable containing total datasets per country
-        and record basis
-        :return: Writes a csv
-    """
-
-    # Preparing basic csv
-    headers = ['Origin', 'Total']
-    values: dict = {
-        'total': ['Total']
-    }
-
-    # Appending headers and total values
-    for total in geocase_data['total']:
-        if not total == "specimens":
-            headers.append(total)
-
-        values['total'].append(geocase_data['total'][total])
-
-    # Appending country values
-    for country in geocase_data['countries']:
-        values[country] = [country]
-        values[country] += [v for v in geocase_data['countries'][country].values()]
-
-    # Write to publishers_issues_flags.csv
-    csv_file = "csv_files/written/geocase_data.csv"
-
-    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-
-        writer.writerow(headers)
-
-        for v in values.values():
-            writer.writerow(v)
-
-
-# Call on function
-write_to_csv(gather_data())

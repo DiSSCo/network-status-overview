@@ -45,9 +45,6 @@ def gather_datasets() -> dict:
     return total_datasets
 
 
-gather_datasets()
-
-
 def gather_specimens() -> dict:
     """ Searches in GBIF for the number of specimens belonging to DiSSCo and saves this
         Filters the results based on the basis of record property and orders by country
@@ -162,7 +159,7 @@ def gather_issues_flags() -> dict:
 
 # Function could be divided into separate functions
 # Publishers replace institutions until further notice
-def get_institutions_data() -> dict:
+def gather_institutions() -> dict:
     """ Questions GBIF API and requests data from publishers within the DiSSCo network
         Handles the data and reforms these to a usable format
         :return publishers: A dict of the refined data
