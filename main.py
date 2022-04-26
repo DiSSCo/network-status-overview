@@ -1,154 +1,169 @@
-import requests
+# GBIF API functionality
+import GBIF_functions
+# GeoCASe API functionality
+import GeoCASe_functions
+# CSV files functionality
+import csv_functions
 
 
-# Defining GBIF endpoints
-gbif_dataset = 'https://api.gbif.org/v1/dataset/search'
-gbif_specimen = 'https://www.gbif.org/api/occurrence/breakdown'
+def main():
+    options_list = [
+        'all',
+        'gbif_datasets',
+        'gbif_specimens',
+        'gbif_issues_flags',
+        'gbif_issues_flags_monthly',
+        'gbif_institutions',
+        'geocase_data'
+    ]
+
+    print(*options_list, sep='\n')
+    request = input('\nSelect an option: ')
+
+    if request in options_list:
+        # Check which function
+        match request:
+            case 'all':
+                # Call on all functions
+                execute_all()
+            case 'gbif_datasets':
+                # Call on GBIF datasets
+                gbif_datasets()
+            case 'gbif_specimens':
+                # Call on GBIF specimens
+                gbif_specimens()
+            case 'gbif_issues_flags':
+                # Call on GBIF issues and flags
+                gbif_issues_flags()
+            case 'gbif_issues_flags_monthly':
+                # Call on GBIF issues and flags monthly progress
+                gbif_issues_flags_monthly()
+            case 'gbif_institutions':
+                # Call on GBIF institutions
+                gbif_institutions()
+            case 'geocase_data':
+                # Call on GeoCASe data
+                geocase_data()
 
 
-def gather_datasets() -> dict:
-    """ Searches in GBIF for the number of datasets belonging to DiSSCo and saves this
-        Uses the number to iterate through the datasets, adding up the total per country
-        Saves the data in the global 'data' dict
-    """
+# Call on all functions, one at a time
+def execute_all():
+    print('Now executing all methods, one at a time')
+    total_count = 6
+    progress = 0
 
-    # Data definition
-    total_datasets: dict = {
-        'total': 0,
-        'countries': {}
-    }
+    # GBIF datasets
+    gbif_datasets()
+    progress += 1
+    print(f'Completed: {progress} out of {total_count}')
 
-    # Initial query for dataset count
-    query: dict = {'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655', 'limit': 1}
-    response = requests.get(gbif_dataset, params=query).json()
+    # GBIF specimens
+    gbif_specimens()
+    progress += 1
+    print(f'Completed: {progress} out of {total_count}')
 
-    total_datasets['total'] = response['count']
-    i = 0
+    # GBIF issues and flags
+    gbif_issues_flags()
+    progress += 1
+    print(f'Completed: {progress} out of {total_count}')
 
-    # Gather all datasets per 1000 (GBIF max)
-    while i < total_datasets['total']:
-        query = {'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655', 'limit': 1000, 'offset': i}
-        response = requests.get(gbif_dataset, params=query).json()
+    # GBIF issues and flags monthly
+    gbif_issues_flags_monthly()
+    progress += 1
+    print(f'Completed: {progress} out of {total_count}')
 
-        # Iterate through datasets and gather information
-        for dataset in response['results']:
-            # Count datasets per country
-            if dataset['publishingCountry'] not in total_datasets['countries']:
-                total_datasets['countries'][dataset['publishingCountry']] = 0
+    # GBIF institutions
+    gbif_institutions()
+    progress += 1
+    print(f'Completed: {progress} out of {total_count}')
 
-            total_datasets['countries'][dataset['publishingCountry']] += 1
-            i += 1
+    # GeoCASe data
+    geocase_data()
+    progress += 1
+    print(f'Completed: {progress} out of {total_count}')
 
-    return total_datasets
-
-
-def gather_specimens() -> dict:
-    """ Searches in GBIF for the number of specimens belonging to DiSSCo and saves this
-        Filters the results based on the basis of record property and orders by country
-        Uses this data to iterate through the countries to calculate their specimen total
-        Finally categorizes these totals using basis of record
-        Saves the data in the global 'data' dict
-    """
-
-    # Data definition
-    total_specimens: dict = {
-        'total': {},
-        'countries': {}
-    }
-
-    # Gather number of specimens per publishing country and filtered on basis of record
-    basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
-    query: dict = {
-        'basis_of_record': basis_of_record,
-        'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
-        'advanced': True,
-        'dimension': 'publishing_country',
-        'secondDimension': 'basis_of_record',
-        'limit': 1000,
-        'offset': 0
-    }
-    response = requests.get(gbif_specimen, params=query).json()
-
-    # Iterate through the countries to calculate the total amount of specimens
-    for country in response['results']:
-        total_specimens['countries'][country['filter']['publishing_country']] = {
-            'total': country['count']
-        }
-
-        # Group the totals of countries by basis of record
-        i = 0
-        for bor in basis_of_record:
-            if total_specimens['total'].get(bor) is None:
-                total_specimens['total'][bor] = country['values'][i]
-            else:
-                total_specimens['total'][bor] += country['values'][i]
-
-            total_specimens['countries'][country['filter']['publishing_country']][bor] = country['values'][i]
-            i += 1
-
-    return total_specimens
+    print('\nProcess done!')
 
 
-def gather_issues_flags() -> dict:
-    """ Searches in GBIF for the number of publishing countries belonging to DiSSCo
-        Iterates through this data to call on the issues and flags belonging to each country
-        Finally calculates the totals per issue or flag from a country
-        Saves the data in the global 'data' dict
-    """
+# GBIF functions
+def gbif_datasets():
+    # First collect and prepare datasets data
+    print('\nReceiving datasets data from GBIF...')
+    data = GBIF_functions.gather_datasets()
 
-    # Data definition
-    issues_and_flags: dict = {
-        'total': 0, 'countries': {}
-    }
+    # Then write data to csv
+    print('\nData fetched and prepared, now writing to CSV...')
+    csv_file = csv_functions.write_datasets_to_csv(data)
 
-    # Gather all publishing countries of DiSSCo
-    query: dict = {
-        'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
-        'advanced': True,
-        'dimension': 'publishing_country',
-        'limit': 1000,
-        'offset': 0
-    }
-    response = requests.get(gbif_specimen, params=query).json()
+    # Finishing statement
+    print(f'\nProcess finished! CSV was saved in: "{csv_file}"')
 
-    # Iterate through countries
-    for country in response['results']:
-        country_code = country['filter']['publishing_country']
 
-        # Gather issues and flags per country
-        query = {
-            'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
-            'publishing_country': country_code,
-            'advanced': True,
-            'dimension': 'issue',
-            'secondDimension': 'month',
-            'limit': 1000,
-            'offset': 0
-        }
-        response = requests.get(gbif_specimen, params=query).json()
+def gbif_specimens():
+    # First collect and prepare specimens data
+    print('\nReceiving specimens data from GBIF...')
+    data = GBIF_functions.gather_specimens()
 
-        issues_and_flags['countries'][country_code] = {
-            'total': 0
-        }
+    # Then write data to csv
+    print('\nData fetched and prepared, now writing to CSV...')
+    csv_file = csv_functions.write_specimens_to_csv(data)
 
-        # Store total issues and flags per country
-        for issue_flag in response['results']:
-            issues_and_flags['countries'][country_code]['total'] \
-                += issue_flag['count']
+    # Finishing statement
+    print(f'\nProcess finished! CSV was saved in: "{csv_file}"')
 
-            issues_and_flags['countries'][country_code][issue_flag['displayName']] = {
-                'total': issue_flag['count'],
-                'monthly_progress': {}
-            }
 
-            issues_and_flags['total'] += issue_flag['count']
+def gbif_issues_flags():
+    # First collect and prepare issues and flags data
+    print('\nReceiving issues and flags data from GBIF...')
+    data = GBIF_functions.gather_issues_flags()
 
-            # Gather process over time (per month)
-            m = 1
+    # Then write data to csv
+    print('\nData fetched and prepared, now writing to CSV...')
+    csv_file = csv_functions.write_issues_and_flags_to_csv(data)
 
-            while m <= 12:
-                issues_and_flags['countries'][country_code][issue_flag['displayName']]['monthly_progress'][m] \
-                    = issue_flag['values'][m - 1]
-                m += 1
+    # Finishing statement
+    print(f'\nProcess finished! CSV was saved in: "{csv_file}"')
 
-    return issues_and_flags
+
+def gbif_issues_flags_monthly():
+    # First collect and prepare issues and flags data
+    print('\nReceiving issues and flags data from GBIF...')
+    data = GBIF_functions.gather_issues_flags()
+
+    # Then write data to csv
+    print('\nData fetched and prepared, now writing to CSV...')
+    csv_file = csv_functions.write_issues_and_flags_monthly_to_csv(data)
+
+    # Finishing statement
+    print(f'\nProcess finished! CSV was saved in: "{csv_file}"')
+
+
+def gbif_institutions():
+    # First collect and prepare institutions data
+    print('\nReceiving institutions data from GBIF...')
+    data = GBIF_functions.gather_institutions()
+
+    # Then write data to csv
+    print('\nData fetched and prepared, now writing to CSV...')
+    csv_file = csv_functions.write_institution_to_csv(data)
+
+    # Finishing statement
+    print(f'\nProcess finished! CSVs were saved in: "{csv_file}"')
+
+
+# GeoCASe functions
+def geocase_data():
+    # First collect and prepare GeoCASe data
+    print('\nReceiving data from GeoCASe...')
+    data = GeoCASe_functions.gather_data()
+
+    # Then write data to csv
+    print('\nData fetched and prepared, now writing to CSV...')
+    csv_file = csv_functions.write_geocase_data_to_csv(data)
+
+    # Finishing statement
+    print(f'\nProcess finished! CSVs was saved in: "{csv_file}"')
+
+
+# Call on main function
+main()
