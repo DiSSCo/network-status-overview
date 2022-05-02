@@ -311,7 +311,7 @@ def write_institutions_to_csv_issues_and_flags(publishers: dict):
     issues_and_flags_list = create_issues_and_flags_list()
 
     # Preparing basic csv
-    headers = ['Publisher', 'Total'] + issues_and_flags_list
+    headers = ['ROR id', 'Publisher', 'Total'] + issues_and_flags_list
     values: dict = {}
 
     for publisher in publishers:
@@ -319,6 +319,7 @@ def write_institutions_to_csv_issues_and_flags(publishers: dict):
 
         # Inserting values
         values[publisher['gbif_id']] = [
+            publisher['ror_id'],
             publisher['name']
         ]
 
@@ -333,7 +334,7 @@ def write_institutions_to_csv_issues_and_flags(publishers: dict):
             else:
                 values[publisher['gbif_id']].append(0)
 
-        values[publisher['gbif_id']].insert(1, publisher_issue_flag_total)
+        values[publisher['gbif_id']].insert(2, publisher_issue_flag_total)
 
     # Write to publishers_issues_flags.csv
     csv_file = "csv_files/written/publishers_issues_flags.csv"

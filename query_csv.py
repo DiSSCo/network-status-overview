@@ -3,7 +3,7 @@ import copy
 from itertools import islice
 
 
-def request_country_data():
+def read_country_data():
     """ Reads the GBIF and GeoCASe csv files for countries and prepares the data for usage
         Combines the GBIF and GeoCASe data and filters on fossil
         :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
@@ -119,7 +119,7 @@ def request_country_data():
     return global_data
 
 
-def request_publishers_data():
+def read_publishers_data():
     """ Reads the GBIF and GeoCASe csv files for publishers and prepares the data for usage
         Combines the GBIF and GeoCASe data and filters on fossil
         :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
@@ -177,12 +177,11 @@ def request_publishers_data():
         gbif_mapping = next(reader)
 
         for row in reader:
-            # Check if name is not empty, else set GBIF id
-            if row[0] == '':
-                publisher = str(row[1])
+            # Set ROR id, if not present set name
+            if row[2] != '':
+                publisher = str(row[2])
             else:
                 publisher = row[0]
-            row.remove(row[0])
 
             gbif_data[publisher] = {}
 
@@ -194,7 +193,7 @@ def request_publishers_data():
                 gbif_data['Total'] += int(value)
 
             # Adding values
-            i = 1
+            i = 0
             for value in row:
                 gbif_data[publisher][gbif_mapping[i]] = value
 
@@ -206,31 +205,33 @@ def request_publishers_data():
     gbif_data.pop('Total')
 
     for publisher in gbif_data:
+        publisher_name = gbif_data[publisher]['Publisher']
+
         # Check if publisher has data in GeoCASe
-        if publisher in publisher_mapping:
+        if publisher_name in publisher_mapping:
             # Add GeoCASe numbers to GBIF total
-            global_data['Total'] += int(geocase_data[publisher_mapping[publisher]]['Total'])
+            global_data['Total'] += int(geocase_data[publisher_mapping[publisher_name]]['Total'])
 
             # Check if publisher has fossil specimens in GeoCASe
-            if int(geocase_data[publisher_mapping[publisher]]['Fossil']) > 0:
+            if int(geocase_data[publisher_mapping[publisher_name]]['Fossil']) > 0:
                 # Check if publisher also has fossil specimens in GBIF
                 if int(gbif_data[publisher]['FOSSIL_SPECIMEN']) > 0:
                     # Set fossil to data from GeoCASe
                     global_data[publisher]['FOSSIL_SPECIMEN'] =\
-                        geocase_data[publisher_mapping[publisher]]['Fossil']
+                        geocase_data[publisher_mapping[publisher_name]]['Fossil']
 
                     # Remove GBIF fossil records from grand total
                     global_data[publisher]['Total'] -= int(gbif_data[publisher]['FOSSIL_SPECIMEN'])
                     global_data['Total'] -= int(gbif_data[publisher]['FOSSIL_SPECIMEN'])
 
             # Update with other record basis
-            global_data[publisher]['METEORITE'] = geocase_data[publisher_mapping[publisher]]['Meteorite']
-            global_data[publisher]['MINERAL'] = geocase_data[publisher_mapping[publisher]]['Mineral']
-            global_data[publisher]['ROCK'] = geocase_data[publisher_mapping[publisher]]['Rock']
-            global_data[publisher]['OTHER_GEOLOGICAL'] = geocase_data[publisher_mapping[publisher]]['Other_geological']
+            global_data[publisher]['METEORITE'] = geocase_data[publisher_mapping[publisher_name]]['Meteorite']
+            global_data[publisher]['MINERAL'] = geocase_data[publisher_mapping[publisher_name]]['Mineral']
+            global_data[publisher]['ROCK'] = geocase_data[publisher_mapping[publisher_name]]['Rock']
+            global_data[publisher]['OTHER_GEOLOGICAL'] = geocase_data[publisher_mapping[publisher_name]]['Other_geological']
 
             # Add record basis to totals
-            for value in islice(geocase_data[publisher_mapping[publisher]].values(), 1, 6):
+            for value in islice(geocase_data[publisher_mapping[publisher_name]].values(), 1, 6):
                 global_data[publisher]['Total'] += int(value)
                 global_data['Total'] += int(value)
         else:
@@ -243,9 +244,31 @@ def request_publishers_data():
     return global_data
 
 
-def request_publishing_country():
-    print('test')
+def request_publishing_country(country_codes: list):
+    # Receive publishing countries data
+    publishing_countries = read_country_data()
+
+    # Create response
+    response: dict = {}
+
+    for country in country_codes:
+        response[country] = publishing_countries[country]
+
+    return response
 
 
-request_publishers_data()
-request_country_data()
+def request_publishers(ror_ids: list):
+    # Receive publishers ROR id data
+    publishers = read_publishers_data()
+
+    # Create response
+    response: dict = {}
+
+    for publisher in ror_ids:
+        response[publisher] = publishers[publisher]
+
+    return response
+
+
+# ror_ids = ['05natt857', '0566bfb96', '04y2aw426']
+# print(request_publishers(ror_ids))
