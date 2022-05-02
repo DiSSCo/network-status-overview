@@ -14,7 +14,8 @@ def main():
         'gbif_issues_flags',
         'gbif_issues_flags_monthly',
         'gbif_institutions',
-        'geocase_data'
+        'geocase_data',
+        'geocase_publishers'
     ]
 
     print(*options_list, sep='\n')
@@ -44,12 +45,15 @@ def main():
             case 'geocase_data':
                 # Call on GeoCASe data
                 geocase_data()
+            case 'geocase_publishers':
+                # Call on GeoCASe publishers
+                geocase_publishers()
 
 
 # Call on all functions, one at a time
 def execute_all():
     print('Now executing all methods, one at a time')
-    total_count = 6
+    total_count = 7
     progress = 0
 
     # GBIF datasets
@@ -79,6 +83,11 @@ def execute_all():
 
     # GeoCASe data
     geocase_data()
+    progress += 1
+    print(f'Completed: {progress} out of {total_count}')
+
+    # GeoCASe publishers
+    geocase_publishers()
     progress += 1
     print(f'Completed: {progress} out of {total_count}')
 
@@ -160,6 +169,19 @@ def geocase_data():
     # Then write data to csv
     print('\nData fetched and prepared, now writing to CSV...')
     csv_file = csv_functions.write_geocase_data_to_csv(data)
+
+    # Finishing statement
+    print(f'\nProcess finished! CSVs was saved in: "{csv_file}"')
+
+
+def geocase_publishers():
+    # First collect and prepare GeoCASe publishers data
+    print('\nReceiving data from GeoCASe...')
+    data = GeoCASe_functions.gather_publishers()
+
+    # Then write data to csv
+    print('\nData fetched and prepared, now writing to CSV...')
+    csv_file = csv_functions.write_geocase_publishers_to_csv(data)
 
     # Finishing statement
     print(f'\nProcess finished! CSVs was saved in: "{csv_file}"')

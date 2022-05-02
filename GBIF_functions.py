@@ -1,3 +1,5 @@
+from typing import Any
+
 import requests
 import csv
 
@@ -7,6 +9,13 @@ network_key = '17abcf75-2f1e-46dd-bf75-a5b21dd02655'
 gbif_institution = 'https://api.gbif.org/v1/network/' + network_key
 gbif_dataset = 'https://api.gbif.org/v1/dataset/search'
 gbif_specimen = 'https://www.gbif.org/api/occurrence/breakdown'
+
+# Base query for GBIF
+base_query = {
+    'network_key': network_key,
+    'limit': 1000,
+    'offset': 0
+}
 
 
 def gather_datasets() -> dict:
@@ -61,15 +70,13 @@ def gather_specimens() -> dict:
 
     # Gather number of specimens per publishing country and filtered on basis of record
     basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
-    query: dict = {
+    query: dict = base_query | {
         'basis_of_record': basis_of_record,
-        'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
         'advanced': True,
         'dimension': 'publishing_country',
-        'secondDimension': 'basis_of_record',
-        'limit': 1000,
-        'offset': 0
+        'secondDimension': 'basis_of_record'
     }
+
     response = requests.get(gbif_specimen, params=query).json()
 
     # Iterate through the countries to calculate the total amount of specimens
@@ -105,12 +112,9 @@ def gather_issues_flags() -> dict:
     }
 
     # Gather all publishing countries of DiSSCo
-    query: dict = {
-        'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
+    query: dict = base_query | {
         'advanced': True,
-        'dimension': 'publishing_country',
-        'limit': 1000,
-        'offset': 0
+        'dimension': 'publishing_country'
     }
     response = requests.get(gbif_specimen, params=query).json()
 
@@ -119,16 +123,13 @@ def gather_issues_flags() -> dict:
         country_code = country['filter']['publishing_country']
 
         # Gather issues and flags per country
-        query = {
-            'network_key': '17abcf75-2f1e-46dd-bf75-a5b21dd02655',
+        c_query: dict = base_query | {
             'publishing_country': country_code,
             'advanced': True,
             'dimension': 'issue',
-            'secondDimension': 'month',
-            'limit': 1000,
-            'offset': 0
+            'secondDimension': 'month'
         }
-        response = requests.get(gbif_specimen, params=query).json()
+        response = requests.get(gbif_specimen, params=c_query).json()
 
         issues_and_flags['countries'][country_code] = {
             'total': 0
@@ -194,21 +195,18 @@ def gather_institutions() -> dict:
         for row in reader:
             for publisher in publishers:
                 if publisher in row:
-                    publishers[publisher]['name'] = row[3]
+                    publishers[publisher]['name'] = row[4]
                     publishers[publisher]['ror_id'] = row[5]
 
     # Calculate metrics for basis of record per publisher and issues/flags
     basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
-    query = {
-        'network_key': network_key,
+    b_query: dict = base_query | {
         'basis_of_record': basis_of_record,
         'advanced': True,
         'dimension': 'publishingOrg',
-        'secondDimension': 'basis_of_record',
-        'limit': 1000,
-        'offset': 0
+        'secondDimension': 'basis_of_record'
     }
-    response = requests.get(gbif_specimen, params=query).json()
+    response = requests.get(gbif_specimen, params=b_query).json()
 
     for publisher in response['results']:
         i = 0
@@ -219,16 +217,13 @@ def gather_institutions() -> dict:
             i += 1
 
         # While looping for publisher, find issues and flags
-        query = {
-            'network_key': network_key,
+        c_query: dict = base_query | {
             'publishingOrg': publisher['filter']['publishing_org'],
             'advanced': True,
             'dimension': 'issue',
-            'secondDimension': 'month',
-            'limit': 1000,
-            'offset': 0
+            'secondDimension': 'month'
         }
-        response = requests.get(gbif_specimen, params=query).json()
+        response = requests.get(gbif_specimen, params=c_query).json()
 
         # Set issues and flags values
         publishers[publisher['filter']['publishing_org']]['issues_and_flags'] = {}

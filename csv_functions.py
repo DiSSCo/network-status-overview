@@ -387,3 +387,36 @@ def write_geocase_data_to_csv(geocase_data: dict):
             writer.writerow(v)
 
     return csv_file
+
+
+def write_geocase_publishers_to_csv(geocase_publishers: dict):
+    # Preparing basic csv
+    headers = ['Origin', 'Total']
+    values: dict = {
+        'total': ['Total']
+    }
+
+    # Appending headers and total values
+    for total in geocase_publishers['total']:
+        if not total == "specimens":
+            headers.append(total)
+
+        values['total'].append(geocase_publishers['total'][total])
+
+    # Appending country values
+    for country in geocase_publishers['providers']:
+        values[country] = [country]
+        values[country] += [v for v in geocase_publishers['providers'][country].values()]
+
+    # Write to publishers_issues_flags.csv
+    csv_file = "csv_files/written/geocase_publishers.csv"
+
+    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(headers)
+
+        for v in values.values():
+            writer.writerow(v)
+
+    return csv_file
