@@ -1,99 +1,217 @@
 import plotly.graph_objects as go
-import GBIF_functions
+
+# Internal functions
+import query_csv
 
 
-def draw_gbif_datasets_country(gbif_datasets: dict):
+def draw_datasets(mode: str, request_list: list):
+    x: list = []
+    y: list = []
+
+    # Check which mode is being called
+    if mode == 'publishing_country':
+        # Prepare publishing country data
+        publishing_countries = query_csv.request_publishing_country(request_list)
+        graph_title = 'Number of datasets per DiSSCo publishing country'
+
+        for country in publishing_countries:
+            x.append(country)
+            y.append(int(publishing_countries[country]['Total datasets']))
+    elif mode == 'publisher':
+        # Prepare publisher data
+        publishers = query_csv.request_publishers(request_list)
+        graph_title = 'Number of datasets per DiSSCo publisher'
+
+        for publisher in publishers:
+            x.append(publishers[publisher]['Publisher'])
+            y.append(int(publishers[publisher]['Total datasets']))
+    else:
+        print('No valid mode is selected')
+        return False
+
     fig = go.Figure(
         data=[go.Bar(
-            x=[country for country in gbif_datasets['countries'].keys()],
-            y=[value for value in gbif_datasets['countries'].values()]
+            x=x,
+            y=y
         )],
         layout=go.Layout(
-            title=go.layout.Title(text="Number of datasets per DiSSCo Country")
+            title=go.layout.Title(text=graph_title)
         )
     )
 
     fig.show()
 
 
-def draw_gbif_datasets_institution(gbif_publishers: dict):
-    basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
-
-    # Prepare X and Y lists
+def draw_specimens(mode: str, request_list: list):
     x: list = []
-    y: dict = {}
+    y: list
+    plot_data: list = []
 
-    # Setting x and y values
-    for publisher in gbif_publishers:
-        x.append(gbif_publishers[publisher]['name'])
+    basis_of_record = [
+        'PRESERVED_SPECIMEN',
+        'FOSSIL_SPECIMEN',
+        'LIVING_SPECIMEN',
+        'MATERIAL_SAMPLE',
+        'METEORITE',
+        'MINERAL',
+        'ROCK',
+        'OTHER_GEOLOGICAL'
+    ]
 
-        for bor in basis_of_record:
-            if y.get(bor):
-                y[bor].append(gbif_publishers[publisher]['totals'][bor])
-            else:
-                y[bor] = [gbif_publishers[publisher]['totals'][bor]]
+    # Check which mode is being called
+    if mode == 'publishing_country':
+        # Prepare publishing country data
+        publishing_countries = query_csv.request_publishing_country(request_list)
 
-    # Preparing graph
-    plot_data = []
+        # Prepare graph
+        graph_title = 'Number of specimens per DiSSCo publishing country'
 
-    for bor in basis_of_record:
-        plot_data.append(
-            go.Bar(
-                name=bor,
-                x=x,
-                y=y[bor]
+        # Setting x and y values
+        for country in publishing_countries:
+            y = []
+
+            for bor in basis_of_record:
+                x.append(bor)
+                y.append(int(publishing_countries[country][bor]))
+
+            plot_data.append(
+                go.Bar(
+                    name=country,
+                    x=x,
+                    y=y
+                )
             )
-        )
+    elif mode == 'publisher':
+        # Prepare publisher data
+        publishers = query_csv.request_publishers(request_list)
 
-    # Draw graph
+        # Prepare graph
+        graph_title = 'Number of datasets per DiSSCo publisher'
+
+        # Setting x and y values
+        for publisher in publishers:
+            y = []
+
+            for bor in basis_of_record:
+                x.append(bor)
+                y.append(int(publishers[publisher][bor]))
+
+            plot_data.append(
+                go.Bar(
+                    name=publishers[publisher]['Publisher'],
+                    x=x,
+                    y=y
+                )
+            )
+    else:
+        print('No valid mode is selected')
+        return False
+
     fig = go.Figure(
         data=plot_data,
         layout=go.Layout(
-            title=go.layout.Title(text="Number of specimens per DiSSCo country")
+            title=go.layout.Title(text=graph_title)
         )
     )
 
     fig.show()
 
 
-def draw_gbif_specimens(gbif_specimens: dict):
-    basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']
-
-    # Prepare X and Y lists
+# Currently, single publishing country or publisher
+# Takes top 10 of the highest issues and flags and draws graph
+def draw_issues_and_flags(mode: str, request: list):
     x: list = []
-    y: dict = {}
+    y: list = []
 
-    # Setting x and y values
-    for country in gbif_specimens['countries']:
-        x.append(country)
+    # Check which mode is being called
+    if mode == 'publishing_country' and len(request) == 1:
+        publishing_countries = query_csv.request_publishing_country(request)
+        country_code = request[0]
+        publishing_country = publishing_countries[country_code]
 
-        for bor in basis_of_record:
-            if y.get(bor):
-                y[bor].append(gbif_specimens['countries'][country][bor])
+        # Remove total value
+        del publishing_country['issues_and_flags']['Total']
+
+        # Preparing graph
+        graph_title = f'Number of issues and flags for: {country_code}'
+
+        # Set x and y values
+        for issue_flag in publishing_country['issues_and_flags']:
+            # Check if issue flag number is high enough
+            if len(y) < 10:
+                y.append(int(publishing_country['issues_and_flags'][issue_flag]))
+                x.append(issue_flag)
             else:
-                y[bor] = [gbif_specimens['countries'][country][bor]]
+                # Check if some value in y is lower, if true remove and add new one
+                i = 0
 
-    # Preparing graph
-    plot_data = []
+                for value in y:
+                    if value < int(publishing_country['issues_and_flags'][issue_flag]):
+                        # Remove value from x and y
+                        del y[i]
+                        del x[i]
 
-    for bor in basis_of_record:
-        plot_data.append(
-            go.Bar(
-                name=bor,
-                x=x,
-                y=y[bor]
-            )
-        )
+                        # Add new value
+                        y.append(int(publishing_country['issues_and_flags'][issue_flag]))
+                        x.append(issue_flag)
 
-    # Draw graph
+                        break
+
+                    i += 1
+
+    elif mode == 'publisher' and len(request) == 1:
+        publishers = query_csv.request_publishers(request)
+        ror_id = request[0]
+        publisher = publishers[ror_id]
+
+        # Remove total value
+        del publisher['issues_and_flags']['Total']
+
+        # Preparing graph
+        graph_title = f'Number of issues and flags for: {publisher["Publisher"]}'
+
+        # Set x and y values
+        for issue_flag in publisher['issues_and_flags']:
+            # Check if issue flag number is high enough
+            if len(y) < 10:
+                y.append(int(publisher['issues_and_flags'][issue_flag]))
+                x.append(issue_flag)
+            else:
+                # Check if some value in y is lower, if true remove and add new one
+                i = 0
+
+                for value in y:
+                    if value < int(publisher['issues_and_flags'][issue_flag]):
+                        # Remove value from x and y
+                        del y[i]
+                        del x[i]
+
+                        # Add new value
+                        y.append(int(publisher['issues_and_flags'][issue_flag]))
+                        x.append(issue_flag)
+
+                        break
+
+                    i += 1
+    else:
+        print('No valid mode is selected')
+
     fig = go.Figure(
-        data=plot_data,
+        data=[go.Bar(
+            x=x,
+            y=y
+        )],
         layout=go.Layout(
-            title=go.layout.Title(text="Number of specimens per DiSSCo country")
+            title=go.layout.Title(text=graph_title)
         )
     )
 
     fig.show()
 
 
-draw_gbif_datasets_institution(GBIF_functions.gather_institutions())
+# countries = ['NL']
+# draw_issues_and_flags('publishing_country', countries)
+
+# ror_ids = ['052d1a351']
+# draw_issues_and_flags('publisher', ror_ids)
+

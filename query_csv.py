@@ -75,6 +75,30 @@ def read_country_data():
             # Adding to grand total
             gbif_data['Total'] += int(gbif_data[country]['Total'])
 
+    # Reading and adding issues and flags
+    issues_and_flags_csv = 'csv_files/written/issues_and_flags.csv'
+
+    with open(issues_and_flags_csv, 'r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        issues_and_flags_mapping = next(reader)
+        next(reader)
+
+        for row in reader:
+            # Get country code
+            country = row[0]
+            row.remove(row[0])
+
+            row_issues_and_flags: dict = {}
+
+            i = 1
+            for value in row:
+                row_issues_and_flags[issues_and_flags_mapping[i]] = value
+
+                i += 1
+
+            gbif_data[country]['issues_and_flags'] = row_issues_and_flags
+
     # Run through GBIF countries and check if GeoCASe contains fossil data,
     # if so disable fossil data from GBIF and merge data
     global_data = copy.deepcopy(gbif_data)
@@ -115,6 +139,24 @@ def read_country_data():
             global_data[country]['MINERAL'] = 0
             global_data[country]['ROCK'] = 0
             global_data[country]['OTHER_GEOLOGICAL'] = 0
+
+    # Add datasets total to country data
+    datasets_csv = 'csv_files/written/datasets.csv'
+
+    with open(datasets_csv, 'r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        datasets_mapping = next(reader)
+
+        for row in reader:
+            row.remove(row[0])
+            i = 1
+
+            for value in row:
+                # Set dataset total of country
+                global_data[datasets_mapping[i]]['Total datasets'] = value
+
+                i += 1
 
     return global_data
 
@@ -241,6 +283,32 @@ def read_publishers_data():
             global_data[publisher]['ROCK'] = 0
             global_data[publisher]['OTHER_GEOLOGICAL'] = 0
 
+    # Read and add publisher issues and flags
+    issues_and_flags_csv = 'csv_files/written/publishers_issues_flags.csv'
+
+    with open(issues_and_flags_csv, 'r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        issues_and_flags_mapping = next(reader)
+
+        for row in reader:
+            # Get publisher, as in ROR id
+            publisher = row[0]
+            # Remove ROR from values
+            row.remove(row[0])
+            # Remove name from values
+            row.remove(row[0])
+
+            row_issues_and_flags: dict = {}
+
+            i = 2
+            for value in row:
+                row_issues_and_flags[issues_and_flags_mapping[i]] = value
+
+                i += 1
+
+            global_data[publisher]['issues_and_flags'] = row_issues_and_flags
+
     return global_data
 
 
@@ -270,5 +338,8 @@ def request_publishers(ror_ids: list):
     return response
 
 
-# ror_ids = ['05natt857', '0566bfb96', '04y2aw426']
+# countries = ['NL', 'DE', 'EE']
+# print(request_publishing_country(countries))
+
+# ror_ids = ['05natt857', '0566bfb96', '05th1v540']
 # print(request_publishers(ror_ids))
