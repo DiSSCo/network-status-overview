@@ -1,9 +1,13 @@
 import csv
 import copy
 from itertools import islice
+from datetime import datetime as dt
 
 
-def read_country_data():
+current_month = dt.now().strftime('%B')
+
+
+def read_country_data(month=current_month):
     """ Reads the GBIF and GeoCASe csv files for countries and prepares the data for usage
         Combines the GBIF and GeoCASe data and filters on fossil
         :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
@@ -22,7 +26,7 @@ def read_country_data():
     }
 
     # Reading country data from GeoCASe csv
-    geocase_csv = 'csv_files/written/geocase_data.csv'
+    geocase_csv = f'csv_files/storage/{month}/geocase_specimens.csv'
 
     with open(geocase_csv, 'r', newline='', encoding='utf-8') as file:
         geocase_data = {
@@ -49,7 +53,7 @@ def read_country_data():
             geocase_data['Total'] += int(geocase_data[country]['Total'])
 
     # Reading country data from GBIF csv
-    gbif_csv = 'csv_files/written/specimens.csv'
+    gbif_csv = f'csv_files/storage/{month}/gbif_specimens.csv'
 
     with open(gbif_csv, 'r', newline='', encoding='utf-8') as file:
         gbif_data = {
@@ -76,7 +80,7 @@ def read_country_data():
             gbif_data['Total'] += int(gbif_data[country]['Total'])
 
     # Reading and adding issues and flags
-    issues_and_flags_csv = 'csv_files/written/issues_and_flags.csv'
+    issues_and_flags_csv = f'csv_files/storage/{month}/gbif_issues_and_flags.csv'
 
     with open(issues_and_flags_csv, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -141,7 +145,7 @@ def read_country_data():
             global_data[country]['OTHER_GEOLOGICAL'] = 0
 
     # Add datasets total to country data
-    datasets_csv = 'csv_files/written/datasets.csv'
+    datasets_csv = f'csv_files/storage/{month}/gbif_datasets.csv'
 
     with open(datasets_csv, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -161,7 +165,7 @@ def read_country_data():
     return global_data
 
 
-def read_publishers_data():
+def read_publishers_data(month=current_month):
     """ Reads the GBIF and GeoCASe csv files for publishers and prepares the data for usage
         Combines the GBIF and GeoCASe data and filters on fossil
         :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
@@ -180,7 +184,7 @@ def read_publishers_data():
     }
 
     # Reading publisher data from GeoCASe csv
-    geocase_csv = 'csv_files/written/geocase_publishers.csv'
+    geocase_csv = f'csv_files/storage/{month}/geocase_publishers.csv'
 
     with open(geocase_csv, 'r', newline='', encoding='utf-8') as file:
         geocase_data = {
@@ -207,7 +211,7 @@ def read_publishers_data():
             geocase_data['Total'] += int(geocase_data[publisher]['Total'])
 
     # Reading publisher data from GBIF csv
-    gbif_csv = 'csv_files/written/publishers.csv'
+    gbif_csv = f'csv_files/storage/{month}/gbif_publishers.csv'
 
     with open(gbif_csv, 'r', newline='', encoding='utf-8') as file:
         gbif_data = {
@@ -284,7 +288,7 @@ def read_publishers_data():
             global_data[publisher]['OTHER_GEOLOGICAL'] = 0
 
     # Read and add publisher issues and flags
-    issues_and_flags_csv = 'csv_files/written/publishers_issues_flags.csv'
+    issues_and_flags_csv = f'csv_files/storage/{month}/gbif_publishers_issues_flags.csv'
 
     with open(issues_and_flags_csv, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -312,9 +316,9 @@ def read_publishers_data():
     return global_data
 
 
-def request_publishing_country(country_codes: list):
+def request_publishing_country(country_codes: list, month=current_month):
     # Receive publishing countries data
-    publishing_countries = read_country_data()
+    publishing_countries = read_country_data(month)
 
     # Create response
     response: dict = {}
@@ -325,9 +329,9 @@ def request_publishing_country(country_codes: list):
     return response
 
 
-def request_publishers(ror_ids: list):
+def request_publishers(ror_ids: list, month=current_month):
     # Receive publishers ROR id data
-    publishers = read_publishers_data()
+    publishers = read_publishers_data(month)
 
     # Create response
     response: dict = {}
@@ -336,6 +340,26 @@ def request_publishers(ror_ids: list):
         response[publisher] = publishers[publisher]
 
     return response
+
+
+def create_issues_and_flags_list() -> list:
+    """ Takes the csv containing the names of all issues and converts it to a list
+        :return: Returns the issues and flags list
+    """
+
+    issues_file = 'csv_files/sources/GBIF_issues.csv'
+    issues_and_flags_list = []
+
+    with open(issues_file, 'r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        next(reader)
+
+        for row in reader:
+            issue_flag = row[1].lower().replace('_', ' ').capitalize()
+
+            issues_and_flags_list.append(issue_flag)
+
+    return issues_and_flags_list
 
 
 # countries = ['NL', 'DE', 'EE']

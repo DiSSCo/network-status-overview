@@ -14,7 +14,7 @@ def main():
         'gbif_issues_flags',
         'gbif_issues_flags_monthly',
         'gbif_institutions',
-        'geocase_data',
+        'geocase_specimens',
         'geocase_publishers'
     ]
 
@@ -42,9 +42,9 @@ def main():
             case 'gbif_institutions':
                 # Call on GBIF institutions
                 gbif_institutions()
-            case 'geocase_data':
+            case 'geocase_specimens':
                 # Call on GeoCASe data
-                geocase_data()
+                geocase_specimens()
             case 'geocase_publishers':
                 # Call on GeoCASe publishers
                 geocase_publishers()
@@ -82,7 +82,7 @@ def execute_all():
     print(f'Completed: {progress} out of {total_count}')
 
     # GeoCASe data
-    geocase_data()
+    geocase_specimens()
     progress += 1
     print(f'Completed: {progress} out of {total_count}')
 
@@ -161,14 +161,14 @@ def gbif_institutions():
 
 
 # GeoCASe functions
-def geocase_data():
+def geocase_specimens():
     # First collect and prepare GeoCASe data
     print('\nReceiving data from GeoCASe...')
     data = GeoCASe_functions.gather_data()
 
     # Then write data to csv
     print('\nData fetched and prepared, now writing to CSV...')
-    csv_file = csv_functions.write_geocase_data_to_csv(data)
+    csv_file = csv_functions.write_geocase_specimens_to_csv(data)
 
     # Finishing statement
     print(f'\nProcess finished! CSVs was saved in: "{csv_file}"')
