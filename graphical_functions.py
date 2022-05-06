@@ -255,6 +255,11 @@ def draw_issues_and_flags(mode: str, request_list: list):
 
 # Currently, for a single publishing country or publisher
 def draw_specimens_progress(mode: str, request_list: list):
+    """ Calls on the data belonging to the requested publishing countries / publishers
+        Transforms the data to a usable format for Plotly
+        :return: Draws a graph based on the amount of specimens per basis of record per month
+    """
+
     x: list = []
     y: dict = {}
     plot_data: list = []
@@ -367,6 +372,11 @@ def draw_specimens_progress(mode: str, request_list: list):
 
 # Currently, for a single publishing country or publisher
 def draw_issues_and_flags_progress(mode: str, request_list: list):
+    """ Calls on the data belonging to the requested publishing countries / publishers
+        Transforms the data to a usable format for Plotly
+        :return: Draws a graph based on the amount of issues and flags per month
+    """
+
     x: list = []
     y: dict = {}
     plot_data: list = []
@@ -435,7 +445,7 @@ def draw_issues_and_flags_progress(mode: str, request_list: list):
                     else:
                         y[hot_issue_flag] = [int(month_data[country_code]['issues_and_flags'][hot_issue_flag])]
 
-        # # Append to plot data
+        # Append to plot data
         for hot_issue_flag in hottest_issues_and_flags:
             plot_data.append(
                 go.Scatter(
@@ -504,7 +514,7 @@ def draw_issues_and_flags_progress(mode: str, request_list: list):
                     else:
                         y[hot_issue_flag] = [int(month_data[publisher['ROR id']]['issues_and_flags'][hot_issue_flag])]
 
-        # # Append to plot data
+        # Append to plot data
         for hot_issue_flag in hottest_issues_and_flags:
             plot_data.append(
                 go.Scatter(
@@ -526,8 +536,3 @@ def draw_issues_and_flags_progress(mode: str, request_list: list):
     )
 
     fig.show()
-
-
-# a = ['00xmqmx64']
-# # a = ['EE']
-# draw_issues_and_flags('publisher', a)

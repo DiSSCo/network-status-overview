@@ -84,10 +84,10 @@ def write_specimens_to_csv(total_specimens: dict):
     return csv_file
 
 
-def write_issues_and_flags_to_csv(issues_and_flags: dict):
+def write_issues_and_flags_to_csv(issues_and_flags: dict) -> str:
     """ Takes the total datasets dict and writes it to csv
         :param issues_and_flags: Dict of global data variable containing total issues and flags per country
-        :return: Writes a csv
+        :return: Writes a csv, returns name of csv as a string
     """
 
     # Receiving issues and flags
@@ -147,10 +147,10 @@ def write_issues_and_flags_to_csv(issues_and_flags: dict):
     return csv_file
 
 
-def write_issues_and_flags_monthly_to_csv(issues_and_flags: dict):
+def write_issues_and_flags_monthly_to_csv(issues_and_flags: dict) -> str:
     """ Let's the user choose a country code and writes the monthly progress of issues and flags to csv
         :param issues_and_flags: Dict of global data variable containing total issues and flags per country
-        :return: Writes a csv
+        :return: Writes a csv, returns name of csv as a string
     """
 
     # Choose country code (later to be automized)
@@ -228,10 +228,11 @@ def write_issues_and_flags_monthly_to_csv(issues_and_flags: dict):
     return csv_file
 
 
-def write_institution_to_csv(publishers: dict):
+def write_institution_to_csv(publishers: dict) -> str:
     """ Receives data from the institution function in main.py
         Calls on related functions to write the data to csv
-        :return: Calls on: write_institution_to_csv_totals and write_institution_to_csv_issues_and_flags
+        :return: Calls on: write_institution_to_csv_totals and
+            write_institution_to_csv_issues_and_flags, returns name of csv as a string
     """
 
     # Write csv files
@@ -243,11 +244,11 @@ def write_institution_to_csv(publishers: dict):
     return csv_file
 
 
-def write_institutions_to_csv_totals(publishers: dict):
+def write_institutions_to_csv_totals(publishers: dict) -> str:
     """ Prepares data from publishers dictionary and writes this to csv
         Data handled are: total datasets and basis of record
         :param publishers: Dict of GBIF publishers from DiSSCo network and related data
-        :return: Writes a csv
+        :return: Writes a csv, returns name of csv as a string
     """
 
     # Preparing basic csv
@@ -288,11 +289,11 @@ def write_institutions_to_csv_totals(publishers: dict):
     return csv_file
 
 
-def write_institutions_to_csv_issues_and_flags(publishers: dict):
+def write_institutions_to_csv_issues_and_flags(publishers: dict) -> str:
     """ Prepares data from publishers dictionary and writes this to csv
         Data handled are: issues and flags (total)
         :param publishers: Dict of GBIF publishers from DiSSCo network and related data
-        :return: Writes a csv
+        :return: Writes a csv, returns name of csv as a string
     """
 
     # Receiving issues and flags
@@ -339,11 +340,11 @@ def write_institutions_to_csv_issues_and_flags(publishers: dict):
 
 
 # GeoCASe functions
-def write_geocase_specimens_to_csv(geocase_data: dict):
+def write_geocase_specimens_to_csv(geocase_data: dict) -> str:
     """ Takes the total geocase_data dict and writes it to csv
-        :param geocase_data: Dict of global data variable containing total datasets per country
-        and record basis
-        :return: Writes a csv
+        :param geocase_data: Dict of global data variable containing total datasets
+            per country and record basis
+        :return: Writes a csv, returns name of csv as a string
     """
 
     # Preparing basic csv
@@ -378,7 +379,12 @@ def write_geocase_specimens_to_csv(geocase_data: dict):
     return csv_file
 
 
-def write_geocase_publishers_to_csv(geocase_publishers: dict):
+def write_geocase_publishers_to_csv(geocase_publishers: dict) -> str:
+    """ Takes the geocase_publishers dict and writes it to csv
+        :param geocase_publishers: Dict of global data variable containing publishers
+        :return: Writes a csv, returns name of csv as a string
+    """
+
     # Preparing basic csv
     headers = ['Origin', 'Total']
     values: dict = {
@@ -387,7 +393,7 @@ def write_geocase_publishers_to_csv(geocase_publishers: dict):
 
     # Appending headers and total values
     for total in geocase_publishers['total']:
-        if not total == "specimens":
+        if total != "specimens":
             headers.append(total)
 
         values['total'].append(geocase_publishers['total'][total])

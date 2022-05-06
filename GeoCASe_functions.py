@@ -121,36 +121,47 @@ def gather_publishers() -> dict:
             'total': providers[provider]
         }
 
-        # Query API by provider and facet on basis of record
-        query = {
-            'q': '*',
-            'fq': '{!tag=providername}providername:(\"' + provider_name + '\")',
-            'rows': 0,
-            'facet.field': [
-                'recordbasis'
-            ],
-            'facet': 'on'
-        }
-        response = requests.get(geocase_endpoint, params=query).json()
-        provider_record_basis = response['facet_counts']['facet_fields']['recordbasis']
-
-        # Set record basis values
-        for rb in record_basis:
-            rb_amount = provider_record_basis[provider_record_basis.index(rb) + 1]
-
-            # Check if record basis is other
-            if rb == 'Other':
-                rb = 'Other_geological'
-
-            publishers['providers'][provider_name][rb] = rb_amount
-
-            # Add to record basis total
-            if not publishers['total'].get(rb):
-                publishers['total'][rb] = rb_amount
-            else:
-                publishers['total'][rb] += rb_amount
+        # Query API by provider and facet on record basis
+        publishers = query_on_record_basis(provider_name, publishers, record_basis)
 
         # Plus one for the overlapping loop
         i += 1
+
+    return publishers
+
+
+def query_on_record_basis(provider_name: str, publishers: dict, record_basis: list) -> dict:
+    """ Internal function of gather_publishers()
+        Request record basis data from GeoCASe API per individual provider
+        :return: Returns the updated publishers dict
+    """
+
+    query: dict = {
+        'q': '*',
+        'fq': '{!tag=providername}providername:(\"' + provider_name + '\")',
+        'rows': 0,
+        'facet.field': [
+            'recordbasis'
+        ],
+        'facet': 'on'
+    }
+    response = requests.get(geocase_endpoint, params=query).json()
+    provider_record_basis = response['facet_counts']['facet_fields']['recordbasis']
+
+    # Set record basis values
+    for rb in record_basis:
+        rb_amount = provider_record_basis[provider_record_basis.index(rb) + 1]
+
+        # Check if record basis is other
+        if rb == 'Other':
+            rb = 'Other_geological'
+
+        publishers['providers'][provider_name][rb] = rb_amount
+
+        # Add to record basis total
+        if not publishers['total'].get(rb):
+            publishers['total'][rb] = rb_amount
+        else:
+            publishers['total'][rb] += rb_amount
 
     return publishers
