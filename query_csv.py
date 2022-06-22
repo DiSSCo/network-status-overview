@@ -8,160 +8,6 @@ current_month = dt.now().strftime('%B')
 
 
 # General functions for returning requested data
-
-def read_country_data(month: str = current_month) -> dict:
-    """ Reads the GBIF and GeoCASe csv files for countries and prepares the data for usage
-        Combines the GBIF and GeoCASe data and filters on fossil
-        :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
-        :return global_data:
-    """
-
-    # Temporary country mapping (to be replaced when GeoCASe supports country codes)
-    # First term is GBIF, second is country code from GeoCASe
-    country_mapping = {
-        'DE': 'Germany',
-        'GB': 'UK',
-        'EE': 'Estonia',
-        'AT': 'Austria',
-        'FI': 'Finland',
-        'NL': 'The Netherlands'
-    }
-
-    # Reading country data from GeoCASe csv
-    geocase_csv = f'csv_files/storage/{month}/geocase_specimens.csv'
-    geocase_data = read_geocase_specimens(geocase_csv)
-
-    # Reading country data from GBIF csv
-    gbif_csv = f'csv_files/storage/{month}/gbif_specimens.csv'
-    gbif_data = read_gbif_specimens(gbif_csv)
-
-    # Reading and adding issues and flags from GBIF
-    issues_and_flags_csv = f'csv_files/storage/{month}/gbif_issues_and_flags.csv'
-    gbif_data = read_gbif_issues_flags(issues_and_flags_csv, gbif_data)
-
-    # Run through GBIF countries and check if GeoCASe contains fossil data,
-    # if so disable fossil data from GBIF and merge data
-    global_data = copy.deepcopy(gbif_data)
-    gbif_data.pop('Total')
-
-    for country in gbif_data:
-        # Check if country has data in GeoCASe
-        if country in country_mapping:
-            # Add GeoCASe numbers to GBIF total
-            global_data['Total'] += int(geocase_data[country_mapping[country]]['Total'])
-            global_data[country]['Total'] = int(global_data[country]['Total'])
-
-            # Check if country has fossil specimens in GeoCASe
-            if int(geocase_data[country_mapping[country]]['Fossil']) > 0:
-                # Check if country also has fossil specimens in GBIF
-                if int(gbif_data[country]['FOSSIL_SPECIMEN']) > 0:
-                    # Set fossil to data from GeoCASe
-                    global_data[country]['FOSSIL_SPECIMEN'] =\
-                        geocase_data[country_mapping[country]]['Fossil']
-
-                    # Remove GBIF fossil records from grand total
-                    global_data[country]['Total'] -= int(gbif_data[country]['FOSSIL_SPECIMEN'])
-                    global_data['Total'] -= int(gbif_data[country]['FOSSIL_SPECIMEN'])
-
-            # Update with other record basis
-            global_data[country]['METEORITE'] = geocase_data[country_mapping[country]]['Meteorite']
-            global_data[country]['MINERAL'] = geocase_data[country_mapping[country]]['Mineral']
-            global_data[country]['ROCK'] = geocase_data[country_mapping[country]]['Rock']
-            global_data[country]['OTHER_GEOLOGICAL'] = geocase_data[country_mapping[country]]['Other_geological']
-
-            # Add record basis to totals
-            for value in islice(geocase_data[country_mapping[country]].values(), 1, 6):
-                global_data[country]['Total'] += int(value)
-                global_data['Total'] += int(value)
-        else:
-            # Update countries out of GeoCASe
-            global_data[country]['METEORITE'] = 0
-            global_data[country]['MINERAL'] = 0
-            global_data[country]['ROCK'] = 0
-            global_data[country]['OTHER_GEOLOGICAL'] = 0
-
-    # Add datasets total to country data
-    datasets_csv = f'csv_files/storage/{month}/gbif_datasets.csv'
-    global_data = read_gbif_datasets(datasets_csv, global_data)
-
-    return global_data
-
-
-def read_publishers_data(month: str = current_month) -> dict:
-    """ Reads the GBIF and GeoCASe csv files for publishers and prepares the data for usage
-        Combines the GBIF and GeoCASe data and filters on fossil
-        :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
-        :return global_data:
-    """
-
-    # Temporary publisher mapping (to be replaced when GeoCASe supports relevant publisher id like ROR)
-    # First term is GBIF, second is name from ROR
-    publisher_mapping = {
-        'Museum für Naturkunde': 'Museum für Naturkunde',
-        'Natural History Museum': 'Natural History Museum, England',
-        'Tallinn University of Technology': 'SARV',
-        'Naturhistorisches Museum': 'Museum of Natural History Vienna',
-        'Finnish Museum of Natural History': 'FMNH',
-        'Naturalis Biodiversity Center': 'Naturalis'
-    }
-
-    # Reading publisher data from GeoCASe csv and add to geocase_data
-    geocase_csv = f'csv_files/storage/{month}/geocase_publishers.csv'
-    geocase_data = read_geocase_publishers(geocase_csv)
-
-    # Reading publisher data from GBIF csv
-    gbif_csv = f'csv_files/storage/{month}/gbif_publishers.csv'
-    gbif_data = read_gbif_publishers(gbif_csv)
-
-    # Run through GBIF publishers and check if GeoCASe contains fossil data,
-    # if so disable fossil data from GBIF and merge data
-    global_data = copy.deepcopy(gbif_data)
-    gbif_data.pop('Total')
-
-    for publisher in gbif_data:
-        publisher_name = gbif_data[publisher]['Publisher']
-
-        # Check if publisher has data in GeoCASe
-        if publisher_name in publisher_mapping:
-            # Add GeoCASe numbers to GBIF total
-            global_data['Total'] += int(geocase_data[publisher_mapping[publisher_name]]['Total'])
-
-            # Check if publisher has fossil specimens in GeoCASe
-            if int(geocase_data[publisher_mapping[publisher_name]]['Fossil']) > 0:
-                # Check if publisher also has fossil specimens in GBIF
-                if int(gbif_data[publisher]['FOSSIL_SPECIMEN']) > 0:
-                    # Set fossil to data from GeoCASe
-                    global_data[publisher]['FOSSIL_SPECIMEN'] =\
-                        geocase_data[publisher_mapping[publisher_name]]['Fossil']
-
-                    # Remove GBIF fossil records from grand total
-                    global_data[publisher]['Total'] -= int(gbif_data[publisher]['FOSSIL_SPECIMEN'])
-                    global_data['Total'] -= int(gbif_data[publisher]['FOSSIL_SPECIMEN'])
-
-            # Update with other record basis
-            global_data[publisher]['METEORITE'] = geocase_data[publisher_mapping[publisher_name]]['Meteorite']
-            global_data[publisher]['MINERAL'] = geocase_data[publisher_mapping[publisher_name]]['Mineral']
-            global_data[publisher]['ROCK'] = geocase_data[publisher_mapping[publisher_name]]['Rock']
-            global_data[publisher]['OTHER_GEOLOGICAL'] = geocase_data[publisher_mapping[publisher_name]]['Other_geological']
-
-            # Add record basis to totals
-            for value in islice(geocase_data[publisher_mapping[publisher_name]].values(), 1, 6):
-                global_data[publisher]['Total'] += int(value)
-                global_data['Total'] += int(value)
-        else:
-            # Update countries out of GeoCASe
-            global_data[publisher]['METEORITE'] = 0
-            global_data[publisher]['MINERAL'] = 0
-            global_data[publisher]['ROCK'] = 0
-            global_data[publisher]['OTHER_GEOLOGICAL'] = 0
-
-    # Read and add publisher issues and flags
-    issues_and_flags_csv = f'csv_files/storage/{month}/gbif_publishers_issues_flags.csv'
-    global_data = read_gbif_publishers_issues_flags(issues_and_flags_csv, global_data)
-
-    return global_data
-
-
 def create_issues_and_flags_list() -> list:
     """ Takes the csv containing the names of all issues and converts it to a list
         :return: Returns the issues and flags list
@@ -420,6 +266,159 @@ def read_gbif_publishers_issues_flags(issues_and_flags_csv: str, data: dict) -> 
             data[publisher]['issues_and_flags'] = row_issues_and_flags
 
     return data
+
+
+def read_country_data(month: str = current_month) -> dict:
+    """ Reads the GBIF and GeoCASe csv files for countries and prepares the data for usage
+        Combines the GBIF and GeoCASe data and filters on fossil
+        :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
+        :return global_data:
+    """
+
+    # Temporary country mapping (to be replaced when GeoCASe supports country codes)
+    # First term is GBIF, second is country code from GeoCASe
+    country_mapping = {
+        'DE': 'Germany',
+        'GB': 'UK',
+        'EE': 'Estonia',
+        'AT': 'Austria',
+        'FI': 'Finland',
+        'NL': 'The Netherlands'
+    }
+
+    # Reading country data from GeoCASe csv
+    geocase_csv = f'csv_files/storage/{month}/geocase_specimens.csv'
+    geocase_data = read_geocase_specimens(geocase_csv)
+
+    # Reading country data from GBIF csv
+    gbif_csv = f'csv_files/storage/{month}/gbif_specimens.csv'
+    gbif_data = read_gbif_specimens(gbif_csv)
+
+    # Reading and adding issues and flags from GBIF
+    issues_and_flags_csv = f'csv_files/storage/{month}/gbif_issues_and_flags.csv'
+    gbif_data = read_gbif_issues_flags(issues_and_flags_csv, gbif_data)
+
+    # Run through GBIF countries and check if GeoCASe contains fossil data,
+    # if so disable fossil data from GBIF and merge data
+    global_data = copy.deepcopy(gbif_data)
+    gbif_data.pop('Total')
+
+    for country in gbif_data:
+        # Check if country has data in GeoCASe
+        if country in country_mapping:
+            # Add GeoCASe numbers to GBIF total
+            global_data['Total'] += int(geocase_data[country_mapping[country]]['Total'])
+            global_data[country]['Total'] = int(global_data[country]['Total'])
+
+            # Check if country has fossil specimens in GeoCASe
+            if int(geocase_data[country_mapping[country]]['Fossil']) > 0:
+                # Check if country also has fossil specimens in GBIF
+                if int(gbif_data[country]['FOSSIL_SPECIMEN']) > 0:
+                    # Set fossil to data from GeoCASe
+                    global_data[country]['FOSSIL_SPECIMEN'] =\
+                        geocase_data[country_mapping[country]]['Fossil']
+
+                    # Remove GBIF fossil records from grand total
+                    global_data[country]['Total'] -= int(gbif_data[country]['FOSSIL_SPECIMEN'])
+                    global_data['Total'] -= int(gbif_data[country]['FOSSIL_SPECIMEN'])
+
+            # Update with other record basis
+            global_data[country]['METEORITE'] = geocase_data[country_mapping[country]]['Meteorite']
+            global_data[country]['MINERAL'] = geocase_data[country_mapping[country]]['Mineral']
+            global_data[country]['ROCK'] = geocase_data[country_mapping[country]]['Rock']
+            global_data[country]['OTHER_GEOLOGICAL'] = geocase_data[country_mapping[country]]['Other_geological']
+
+            # Add record basis to totals
+            for value in islice(geocase_data[country_mapping[country]].values(), 1, 6):
+                global_data[country]['Total'] += int(value)
+                global_data['Total'] += int(value)
+        else:
+            # Update countries out of GeoCASe
+            global_data[country]['METEORITE'] = 0
+            global_data[country]['MINERAL'] = 0
+            global_data[country]['ROCK'] = 0
+            global_data[country]['OTHER_GEOLOGICAL'] = 0
+
+    # Add datasets total to country data
+    datasets_csv = f'csv_files/storage/{month}/gbif_datasets.csv'
+    global_data = read_gbif_datasets(datasets_csv, global_data)
+
+    return global_data
+
+
+def read_publishers_data(month: str = current_month) -> dict:
+    """ Reads the GBIF and GeoCASe csv files for publishers and prepares the data for usage
+        Combines the GBIF and GeoCASe data and filters on fossil
+        :rule GeoCASe fossil numbers replace GBIF numbers if country has fossils in GeoCASe
+        :return global_data:
+    """
+
+    # Temporary publisher mapping (to be replaced when GeoCASe supports relevant publisher id like ROR)
+    # First term is GBIF, second is name from ROR
+    publisher_mapping = {
+        'Museum für Naturkunde': 'Museum für Naturkunde',
+        'Natural History Museum': 'Natural History Museum, England',
+        'Tallinn University of Technology': 'SARV',
+        'Naturhistorisches Museum': 'Museum of Natural History Vienna',
+        'Finnish Museum of Natural History': 'FMNH',
+        'Naturalis Biodiversity Center': 'Naturalis'
+    }
+
+    # Reading publisher data from GeoCASe csv and add to geocase_data
+    geocase_csv = f'csv_files/storage/{month}/geocase_publishers.csv'
+    geocase_data = read_geocase_publishers(geocase_csv)
+
+    # Reading publisher data from GBIF csv
+    gbif_csv = f'csv_files/storage/{month}/gbif_publishers.csv'
+    gbif_data = read_gbif_publishers(gbif_csv)
+
+    # Run through GBIF publishers and check if GeoCASe contains fossil data,
+    # if so disable fossil data from GBIF and merge data
+    global_data = copy.deepcopy(gbif_data)
+    gbif_data.pop('Total')
+
+    for publisher in gbif_data:
+        publisher_name = gbif_data[publisher]['Publisher']
+
+        # Check if publisher has data in GeoCASe
+        if publisher_name in publisher_mapping:
+            # Add GeoCASe numbers to GBIF total
+            global_data['Total'] += int(geocase_data[publisher_mapping[publisher_name]]['Total'])
+
+            # Check if publisher has fossil specimens in GeoCASe
+            if int(geocase_data[publisher_mapping[publisher_name]]['Fossil']) > 0:
+                # Check if publisher also has fossil specimens in GBIF
+                if int(gbif_data[publisher]['FOSSIL_SPECIMEN']) > 0:
+                    # Set fossil to data from GeoCASe
+                    global_data[publisher]['FOSSIL_SPECIMEN'] =\
+                        geocase_data[publisher_mapping[publisher_name]]['Fossil']
+
+                    # Remove GBIF fossil records from grand total
+                    global_data[publisher]['Total'] -= int(gbif_data[publisher]['FOSSIL_SPECIMEN'])
+                    global_data['Total'] -= int(gbif_data[publisher]['FOSSIL_SPECIMEN'])
+
+            # Update with other record basis
+            global_data[publisher]['METEORITE'] = geocase_data[publisher_mapping[publisher_name]]['Meteorite']
+            global_data[publisher]['MINERAL'] = geocase_data[publisher_mapping[publisher_name]]['Mineral']
+            global_data[publisher]['ROCK'] = geocase_data[publisher_mapping[publisher_name]]['Rock']
+            global_data[publisher]['OTHER_GEOLOGICAL'] = geocase_data[publisher_mapping[publisher_name]]['Other_geological']
+
+            # Add record basis to totals
+            for value in islice(geocase_data[publisher_mapping[publisher_name]].values(), 1, 6):
+                global_data[publisher]['Total'] += int(value)
+                global_data['Total'] += int(value)
+        else:
+            # Update countries out of GeoCASe
+            global_data[publisher]['METEORITE'] = 0
+            global_data[publisher]['MINERAL'] = 0
+            global_data[publisher]['ROCK'] = 0
+            global_data[publisher]['OTHER_GEOLOGICAL'] = 0
+
+    # Read and add publisher issues and flags
+    issues_and_flags_csv = f'csv_files/storage/{month}/gbif_publishers_issues_flags.csv'
+    global_data = read_gbif_publishers_issues_flags(issues_and_flags_csv, global_data)
+
+    return global_data
 
 
 # Functions for requesting data from interface
