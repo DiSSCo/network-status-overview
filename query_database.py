@@ -7,6 +7,17 @@ from datetime import datetime as dt
 
 current_num_month = dt.now().month
 
+# SonarLint constant: can be removed when GeoCASe organisations are automised
+# Temporary mapping between GBIF and GeoCASe
+organisation_mapping = {
+    'Museum für Naturkunde': 'Museum für Naturkunde',
+    'Natural History Museum': 'Natural History Museum, England',
+    'Tallinn University of Technology': 'SARV',
+    'Naturhistorisches Museum': 'Museum of Natural History Vienna',
+    'Finnish Museum of Natural History': 'FMNH',
+    'Naturalis Biodiversity Center': 'Naturalis'
+}
+
 
 def config(filename='database.ini', section='postgresql'):
     """ Sets up the basic database connection rules fur further usage
@@ -28,6 +39,38 @@ def config(filename='database.ini', section='postgresql'):
     return db
 
 
+def insert_countries(country_entity) -> str:
+    columns: str = ''
+    values: str = ''
+
+    for key in country_entity.keys():
+        if len(columns) == 0:
+            columns += key
+        else:
+            columns += ', ' + key
+
+    for value in country_entity.values():
+        if len(values) == 0:
+            values += "'" + str(value) + "'"
+        else:
+            values += ", '" + str(value) + "'"
+
+    query = f"INSERT INTO countries ({columns}) VALUES ({values})"
+
+    return query
+
+
+def update_countries(country_entity, row) -> str:
+    column_values: str = ''
+
+    for key in country_entity:
+        column_values += f"{key} = '{country_entity[key]}', "
+
+    query = f"UPDATE countries SET {column_values[:-2]} WHERE id = {row[0]}"
+
+    return query
+
+
 def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geocase_data):
     """ Transforms the received countries' data to a standardised format
         Saves the formatted data in the database by insert or update
@@ -46,12 +89,10 @@ def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geoc
     # For each organisation, prepare and save data to database
     for country in gbif_datasets['countries']:
         # Check if GeoCASe data from country is present
-        geocase_dummy: dict
+        geocase_dummy: dict = {}
 
         if country in country_mapping:
             geocase_dummy = geocase_data['countries'][country_mapping[country]]
-        else:
-            geocase_dummy = {}
 
         # Initiate basic entity for database
         country_entity = {
@@ -79,30 +120,10 @@ def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geoc
 
         if row:
             # Update existing record
-            column_values: str = ''
-
-            for key in country_entity:
-                column_values += f"{key} = '{country_entity[key]}', "
-
-            query = f"UPDATE countries SET {column_values[:-2]} WHERE id = {row[0]}"
+            query = update_countries(country_entity, row)
         else:
             # Insert new record
-            columns: str = ''
-            values: str = ''
-
-            for key in country_entity.keys():
-                if len(columns) == 0:
-                    columns += key
-                else:
-                    columns += ', ' + key
-
-            for value in country_entity.values():
-                if len(values) == 0:
-                    values += "'" + str(value) + "'"
-                else:
-                    values += ", '" + str(value) + "'"
-
-            query = f"INSERT INTO countries ({columns}) VALUES ({values})"
+            query = insert_countries(country_entity)
 
         # Execute query
         cur.execute(query)
@@ -112,20 +133,48 @@ def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geoc
         cur.close()
 
 
+def insert_organisations(organisation_entity) -> str:
+    columns: str = ''
+    values: str = ''
+
+    for key in organisation_entity.keys():
+        if len(columns) == 0:
+            columns += key
+        else:
+            columns += ', ' + key
+
+    for value in organisation_entity.values():
+        if value.__contains__("'"):
+            value = value.replace("'", "''")
+
+        if len(values) == 0:
+            values += "'" + str(value) + "'"
+        else:
+            values += ", '" + str(value) + "'"
+
+    query = f"INSERT INTO organisations ({columns}) VALUES ({values})"
+
+    return query
+
+
+def update_organisations(organisation_entity, row) -> str:
+    column_values: str = ''
+
+    for key in organisation_entity:
+        if organisation_entity[key].__contains__("'"):
+            organisation_entity[key] = organisation_entity[key].replace("'", "''")
+
+        column_values += f"{key} = '{organisation_entity[key]}', "
+
+    query = f"UPDATE organisations SET {column_values[:-2]} WHERE id = {row[0]}"
+
+    return query
+
+
 def insert_organisations_data(gbif_data, geocase_data):
     """ Transforms the received organisations' data to a standardised format
         Saves the formatted data in the database by insert or update
     """
-
-    # Temporary mapping between GBIF and GeoCASe
-    organisation_mapping = {
-        'Museum für Naturkunde': 'Museum für Naturkunde',
-        'Natural History Museum': 'Natural History Museum, England',
-        'Tallinn University of Technology': 'SARV',
-        'Naturhistorisches Museum': 'Museum of Natural History Vienna',
-        'Finnish Museum of Natural History': 'FMNH',
-        'Naturalis Biodiversity Center': 'Naturalis'
-    }
 
     # For each organisation, prepare and save data to database
     for organisation in gbif_data:
@@ -164,36 +213,10 @@ def insert_organisations_data(gbif_data, geocase_data):
 
         if row:
             # Update existing record
-            column_values: str = ''
-
-            for key in organisation_entity:
-                if organisation_entity[key].__contains__("'"):
-                    organisation_entity[key] = organisation_entity[key].replace("'", "''")
-
-                column_values += f"{key} = '{organisation_entity[key]}', "
-
-            query = f"UPDATE organisations SET {column_values[:-2]} WHERE id = {row[0]}"
+            query = update_organisations(organisation_entity, row)
         else:
             # Inserting new record
-            columns: str = ''
-            values: str = ''
-
-            for key in organisation_entity.keys():
-                if len(columns) == 0:
-                    columns += key
-                else:
-                    columns += ', ' + key
-
-            for value in organisation_entity.values():
-                if value.__contains__("'"):
-                    value = value.replace("'", "''")
-
-                if len(values) == 0:
-                    values += "'" + str(value) + "'"
-                else:
-                    values += ", '" + str(value) + "'"
-
-            query = f"INSERT INTO organisations ({columns}) VALUES ({values})"
+            query = insert_organisations(organisation_entity)
 
         # Execute query
         cur.execute(query)
@@ -225,10 +248,10 @@ def select_countries_data(request_list: list, month=current_num_month):
     cur = conn.cursor()
 
     # Check if entity already exists (for same month)
+    query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {month}"
+
     if request_list:
-        query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {month} AND country_code IN {tuple(request_list)}".replace(',)', ')')
-    else:
-        query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {month}"
+        query += f" AND country_code IN {tuple(request_list)}".replace(',)', ')')
 
     cur.execute(query)
     data = cur.fetchall()
@@ -299,16 +322,6 @@ def select_organisations_data(request_list: list, month: int = current_num_month
         Transforms the data to an usable format
         :return: global_data: dictionary that possesses the reformed data
     """
-
-    # Temporary mapping between GBIF and GeoCASe
-    organisation_mapping = {
-        'Museum für Naturkunde': 'Museum für Naturkunde',
-        'Natural History Museum': 'Natural History Museum, England',
-        'Tallinn University of Technology': 'SARV',
-        'Naturhistorisches Museum': 'Museum of Natural History Vienna',
-        'Finnish Museum of Natural History': 'FMNH',
-        'Naturalis Biodiversity Center': 'Naturalis'
-    }
 
     # Create database connection
     params = config()
