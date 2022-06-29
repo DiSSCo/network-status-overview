@@ -1,25 +1,83 @@
 import plotly.graph_objects as go
-import calendar
 from datetime import datetime as dt
 
 
 # Internal functions
 import query_database
+import draw_functions.draw_specimens as prep_draw_specimens
+import draw_functions.draw_issues_flags_progress as prep_draw_issues_flags_progress
+import draw_functions.draw_issues_flags as prep_draw_issues_flags
+import draw_functions.draw_specimens_progress as prep_draw_specimens_progress
 
 
 no_mode_message = 'No valid mode is selected'
 current_month = dt.now().strftime('%B')
 
+# SonarLint: define constant instead of literal
+total_datasets_str = 'Total datasets'
+
 colors = [
-    'red',
-    'green',
-    'blue',
-    'yellow',
-    'orange',
-    'purple',
-    'brown',
-    'pink'
+    '#cc0000',
+    '#39ac39',
+    '#e68a00',
+    '#aa80ff',
+    '#0099cc',
+    '#e6e600',
+    '#ffbf00',
+    '#ffccff'
 ]
+
+
+def draw_infrastructures_total() -> go:
+    """ Calls on the data belonging to the relative infrastructures (GBIF and GeoCASe)
+        Transforms the data to a usable format for Plotly
+        :return: Draws a graph based on the amount of datasets
+    """
+
+    # Search for total GBIF datasets via
+    publishing_countries = query_database.select_countries_data([])
+    publishing_countries.pop('Total')
+
+    # Count for total amount of datasets
+    total_datasets = 0
+
+    for country in publishing_countries:
+        total_datasets += publishing_countries[country][total_datasets_str]
+
+    fig = go.Figure(
+        data=[
+            go.Table(
+                header=dict(
+                    values=['Infrastructure', 'Count', 'Percent'],
+                    fill_color='#737373',
+                    font=dict(
+                        size=13,
+                        color='white'
+                    )
+                ),
+                cells=dict(
+                    values=[['GBIF', 'GeoCASe'], total_datasets, '100%'],
+                    font=dict(
+                        size=12,
+                        color='#333333'
+                    ),
+                    height=30
+                )
+            )
+        ],
+        layout=go.Layout(
+            plot_bgcolor="#FFF",
+            height=90,
+            uniformtext_mode='hide',
+            margin=go.layout.Margin(
+                l=0,
+                r=0,
+                b=0,
+                t=0
+            )
+        ))
+
+    return fig
 
 
 def draw_datasets(mode: str, request_list: list) -> go:
@@ -39,7 +97,7 @@ def draw_datasets(mode: str, request_list: list) -> go:
 
         for publisher in publishing_countries:
             x.append(publisher)
-            y.append(int(publishing_countries[publisher]['Total datasets']))
+            y.append(int(publishing_countries[publisher][total_datasets_str]))
     elif mode == 'publisher':
         # Prepare publisher data
         publishers = query_database.select_organisations_data(request_list)
@@ -47,7 +105,7 @@ def draw_datasets(mode: str, request_list: list) -> go:
 
         for publisher in publishers:
             x.append(publishers[publisher]['organisation_name'])
-            y.append(int(publishers[publisher]['Total datasets']))
+            y.append(int(publishers[publisher][total_datasets_str]))
     else:
         print(no_mode_message)
         return False
@@ -58,15 +116,16 @@ def draw_datasets(mode: str, request_list: list) -> go:
             y=x,
             orientation='h',
             marker=dict(
-                color='#33cc33'
+                color=colors
             ),
             text=x,
             textposition='inside',
-            insidetextanchor='start'
+            insidetextanchor='start',
+            width=0.5
         )],
         layout=go.Layout(
             plot_bgcolor="#FFF",
-            bargap=0.6,
+            bargap=0,
             xaxis={
                 'fixedrange': True
             },
@@ -92,21 +151,6 @@ def draw_specimens(mode: str, request_list: list, method: str) -> go:
         :return: Draws a graph based on the amount of specimens
     """
 
-    x: list = []
-    y: list
-    plot_data: list = []
-
-    basis_of_record = [
-        'PRESERVED_SPECIMEN',
-        'FOSSIL_SPECIMEN',
-        'LIVING_SPECIMEN',
-        'MATERIAL_SAMPLE',
-        'METEORITE',
-        'MINERAL',
-        'ROCK',
-        'OTHER_GEOLOGICAL'
-    ]
-
     # Check calling method
     if method == 'bar':
         # Check which mode is being called
@@ -115,61 +159,14 @@ def draw_specimens(mode: str, request_list: list, method: str) -> go:
             publishing_countries = query_database.select_countries_data(request_list)
             publishing_countries.pop('Total')
 
-            # Setting x and y values
-            for country in publishing_countries:
-                y = []
-                i = 0
-
-                for bor in basis_of_record:
-                    x.append(bor)
-                    y.append(int(publishing_countries[country][bor]))
-
-                    plot_data.append(
-                        go.Bar(
-                            name=country,
-                            x=[int(publishing_countries[country][bor])],
-                            y=[country],
-                            orientation='h',
-                            marker=dict(
-                                color=colors[i]
-                            ),
-                            text=bor,
-                            textposition='inside',
-                            insidetextanchor='start'
-                        )
-                    )
-
-                    i += 1
+            # Preparing plot data
+            plot_data = prep_draw_specimens.prepare_draw_specimens_bar_country(publishing_countries)
         elif mode == 'publisher':
             # Prepare publisher data
             publishers = query_database.select_organisations_data(request_list)
             publishers.pop('Total')
 
-            # Setting x and y values
-            for publisher in publishers:
-                y = []
-                i = 0
-
-                for bor in basis_of_record:
-                    x.append(bor)
-                    y.append(int(publishers[publisher][bor]))
-
-                    plot_data.append(
-                        go.Bar(
-                            name=publishers[publisher]['organisation_name'],
-                            x=[int(publishers[publisher][bor])],
-                            y=[publishers[publisher]['organisation_name']],
-                            orientation='h',
-                            marker=dict(
-                                color=colors[i]
-                            ),
-                            text=bor,
-                            textposition='inside',
-                            insidetextanchor='start'
-                        )
-                    )
-
-                    i += 1
+            plot_data = prep_draw_specimens.prepare_draw_specimens_bar_organisation(publishers)
         else:
             print(no_mode_message)
             return False
@@ -180,7 +177,7 @@ def draw_specimens(mode: str, request_list: list, method: str) -> go:
                 plot_bgcolor="#FFF",
                 barmode='stack',
                 showlegend=False,
-                bargap=0.6,
+                bargap=0.3,
                 xaxis={
                     'fixedrange': True,
                     # 'showticklabels': False
@@ -206,25 +203,13 @@ def draw_specimens(mode: str, request_list: list, method: str) -> go:
             publishing_countries = query_database.select_countries_data(request_list)
             publishing_countries.pop('Total')
 
-            # Setting x and y values
-            for country in publishing_countries:
-                y = []
-
-                for bor in basis_of_record:
-                    x.append(bor)
-                    y.append(int(publishing_countries[country][bor]))
+            plot_data = prep_draw_specimens.prepare_draw_specimens_pie_country(publishing_countries)
         elif mode == 'publisher':
             # Prepare publisher data
             publishers = query_database.select_organisations_data(request_list)
             publishers.pop('Total')
 
-            # Setting x and y values
-            for publisher in publishers:
-                y = []
-
-                for bor in basis_of_record:
-                    x.append(bor)
-                    y.append(int(publishers[publisher][bor]))
+            plot_data = prep_draw_specimens.prepare_draw_specimens_pie_organisation(publishers)
         else:
             print(no_mode_message)
             return False
@@ -232,8 +217,8 @@ def draw_specimens(mode: str, request_list: list, method: str) -> go:
         fig = go.Figure(
             data=[
                 go.Pie(
-                    labels=x,
-                    values=y,
+                    labels=plot_data[0],
+                    values=plot_data[1],
                     textposition='inside',
                     marker=dict(
                         colors=colors
@@ -243,6 +228,7 @@ def draw_specimens(mode: str, request_list: list, method: str) -> go:
             layout=go.Layout(
                 plot_bgcolor="#FFF",
                 uniformtext_mode='hide',
+                showlegend=False,
                 margin=go.layout.Margin(
                     l=0,
                     r=0,
@@ -256,11 +242,7 @@ def draw_specimens(mode: str, request_list: list, method: str) -> go:
 
 
 def draw_issue_flag_progress(mode: str, request_list, issue_flag):
-    x: list = []
-    y: list = []
-
     # Prepare quarter months
-    months = list(calendar.month_name)[1:]
     quarter_months: list = []
     check_month = dt.now().month
     counter = 0
@@ -280,37 +262,18 @@ def draw_issue_flag_progress(mode: str, request_list, issue_flag):
         # Prepare graph data
         country_code = request_list[0]
 
-        for month in quarter_months:
-            x.append(months[month - 1])
-            month_data = query_database.select_countries_data([country_code], month)
-
-            if country_code in month_data:
-                # Read csv from month and set values
-                y.append(month_data[country_code]['issues_and_flags'][issue_flag]['total'])
-            else:
-                # Set values to zero
-                y.append(0)
-
+        plot_data = prep_draw_issues_flags_progress.prepare_draw_issues_flags_progress_country(quarter_months, country_code, issue_flag)
     elif mode == 'publisher':
         ror_id = request_list[0]
 
-        for month in quarter_months:
-            x.append(months[month - 1])
-            month_data = query_database.select_organisations_data([ror_id], month)
-
-            if ror_id in month_data:
-                # Read csv from month and set values
-                y.append(month_data[ror_id]['issues_and_flags'][issue_flag]['total'])
-            else:
-                # Set values to zero
-                y.append(0)
+        plot_data = prep_draw_issues_flags_progress.prepare_draw_issues_flags_progress_organisation(quarter_months, ror_id, issue_flag)
 
     # Draw graph
     fig = go.Figure(
         data=[
             go.Scatter(
-                x=x,
-                y=y,
+                x=plot_data[0],
+                y=plot_data[1],
                 orientation='h',
             )
         ],
@@ -348,9 +311,6 @@ def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> 
         :return: Draws a graph based on the amount of issues and flags
     """
 
-    x: list = []
-    y: list = []
-
     # Check which mode is being called
     if mode == 'publishing_country' and len(request_list) == 1:
         publishing_countries = query_database.select_countries_data(request_list)
@@ -362,42 +322,7 @@ def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> 
         # Remove total value
         del publishing_country['issues_and_flags']['total']
 
-        # Set y values
-        y_values: dict = {}
-
-        for issue_flag in publishing_country['issues_and_flags']:
-            # Check if issue flag number is high enough
-            if len(y_values) < return_length:
-                y_values[issue_flag] = int(
-                    publishing_country['issues_and_flags'][issue_flag]['total'])
-            else:
-                # Check if some value in y is lower, if true remove and add new one
-                difference = {}
-
-                for value in y_values:
-                    if y_values[value] < int(publishing_country['issues_and_flags'][issue_flag]['total']):
-                        difference[value] = int(
-                            y_values[value]) - int(publishing_country['issues_and_flags'][issue_flag]['total'])
-
-                # Check if any issue or flag is greater than existing value
-                if len(difference) != 0:
-                    smallest = 0
-                    smallest_issue_flag = ''
-
-                    for value in difference:
-                        if smallest == 0 or smallest > difference[value]:
-                            smallest = difference[value]
-                            smallest_issue_flag = value
-
-                    del y_values[smallest_issue_flag]
-                    y_values[issue_flag] = int(
-                        publishing_country['issues_and_flags'][issue_flag]['total'])
-
-        # Refactoring y values to list and setting x values
-        for issue_flag in y_values:
-            x.append(issue_flag)
-            y.append(y_values[issue_flag])
-
+        plot_data = prep_draw_issues_flags.prepare_draw_issues_flags_countries(publishing_country, return_length)
     elif mode == 'publisher' and len(request_list) == 1:
         publishers = query_database.select_organisations_data(request_list)
         publishers.pop('Total')
@@ -405,41 +330,7 @@ def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> 
         ror_id = request_list[0]
         publisher = publishers[ror_id]
 
-        # Set y values
-        y_values = {}
-
-        for issue_flag in publisher['issues_and_flags']:
-            # Check if issue flag number is high enough
-            if len(y_values) < return_length:
-                y_values[issue_flag] = int(
-                    publisher['issues_and_flags'][issue_flag]['total'])
-            else:
-                # Check if some value in y is lower, if true remove and add new one
-                difference = {}
-
-                for value in y_values:
-                    if y_values[value] < int(publisher['issues_and_flags'][issue_flag]['total']):
-                        difference[value] = int(y_values[value]) - int(
-                            publisher['issues_and_flags'][issue_flag]['total'])
-
-                # Check if any issue or flag is greater than existing value
-                if len(difference) != 0:
-                    smallest = 0
-                    smallest_issue_flag = ''
-
-                    for value in difference:
-                        if smallest == 0 or smallest > difference[value]:
-                            smallest = difference[value]
-                            smallest_issue_flag = value
-
-                    del y_values[smallest_issue_flag]
-                    y_values[issue_flag] = int(
-                        publisher['issues_and_flags'][issue_flag]['total'])
-
-        # Refactoring y values to list and setting x values
-        for issue_flag in y_values:
-            x.append(issue_flag)
-            y.append(y_values[issue_flag])
+        plot_data = prep_draw_issues_flags.prepare_draw_issues_flags_organisation(publisher, return_length)
     else:
         print(no_mode_message)
         return False
@@ -447,20 +338,30 @@ def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> 
     # Setting sub graphs
     sub_graphs: list = []
 
-    for issue_flag in x:
+    for issue_flag in plot_data[0]:
         sub_graphs.append(draw_issue_flag_progress(mode, request_list, issue_flag))
 
     fig = go.Figure(
         data=[
             go.Table(
                 header=dict(
-                    values=['No ISSUE FLAGS', 'Count']
+                    values=['No. ISSUE FLAGS', 'Count'],
+                    fill_color='#737373',
+                    font=dict(
+                        size=13,
+                        color='white'
+                    )
                 ),
                 cells=dict(
-                    values=[x, y],
+                    values=[plot_data[0], plot_data[1]],
                     fill_color=[['white'],
-                                ['red' if int(val) > 5000 else 'orange' if int(val) > 2500 else 'yellow' for val in y],
-                                ['white']]
+                                ['red' if int(val) > 5000 else 'orange' if int(val) > 2500 else 'yellow' for val in plot_data[1]],
+                                ['white']],
+                    font=dict(
+                        size=12,
+                        color='#333333'
+                    ),
+                    height=40
                 )
             )
         ],
@@ -485,105 +386,17 @@ def draw_specimens_progress(mode: str, request_list: list) -> go:
         :return: Draws a graph based on the amount of specimens per basis of record per month
     """
 
-    x: list = []
-    y: dict = {}
-    plot_data: list = []
-
-    basis_of_record = [
-        'PRESERVED_SPECIMEN',
-        'FOSSIL_SPECIMEN',
-        'LIVING_SPECIMEN',
-        'MATERIAL_SAMPLE',
-        'METEORITE',
-        'MINERAL',
-        'ROCK',
-        'OTHER_GEOLOGICAL'
-    ]
-    months = list(calendar.month_name)[1:]
-
     # Check which mode is being called
     if mode == 'publishing_country':
         # Prepare publishing country data
         country_code = request_list[0]
 
-        # Setting x and y values, x = months, y = monthly numbers (out of stored csvs)
-        for month in months:
-            x.append(month)
-
-            # Convert month name to number
-            datetime_object = dt.strptime(month, "%B")
-            month_number = datetime_object.month
-
-            print(country_code)
-
-            month_data = query_database.select_countries_data([country_code], month_number)
-            month_data.pop('Total')
-
-            # Check if month directory is empty
-            if country_code in month_data:
-                # Read csv from month and set values
-                for bor in basis_of_record:
-                    if y.get(bor):
-                        y[bor].append(int(month_data[country_code][bor]))
-                    else:
-                        y[bor] = [int(month_data[country_code][bor])]
-            else:
-                # Set values to zero
-                for bor in basis_of_record:
-                    if y.get(bor):
-                        y[bor].append(0)
-                    else:
-                        y[bor] = [0]
-
-        # Append to plot data
-        for bor in basis_of_record:
-            plot_data.append(
-                go.Scatter(
-                    name=bor,
-                    x=x,
-                    y=y[bor]
-                )
-            )
-
+        plot_data = prep_draw_specimens_progress.prepare_specimens_progress_country(country_code)
     elif mode == 'publisher':
         # Prepare publishing country data
         ror_id = request_list[0]
 
-        # Setting x and y values, x = months, y = monthly numbers (out of stored csvs)
-        for month in months:
-            x.append(month)
-
-            # Convert month name to number
-            datetime_object = dt.strptime(month, "%B")
-            month_number = datetime_object.month
-
-            month_data = query_database.select_organisations_data([ror_id], month_number)
-            month_data.pop('Total')
-
-            # Check if month directory is empty
-            if ror_id in month_data:
-                for bor in basis_of_record:
-                    if y.get(bor):
-                        y[bor].append(int(month_data[ror_id][bor]))
-                    else:
-                        y[bor] = [int(month_data[ror_id][bor])]
-            else:
-                # Set values to zero
-                for bor in basis_of_record:
-                    if y.get(bor):
-                        y[bor].append(0)
-                    else:
-                        y[bor] = [0]
-
-        # Append to plot data
-        for bor in basis_of_record:
-            plot_data.append(
-                go.Scatter(
-                    name=bor,
-                    x=x,
-                    y=y[bor]
-                )
-            )
+        plot_data = prep_draw_specimens_progress.prepare_specimens_progress_organisation(ror_id)
     else:
         print(no_mode_message)
         return False

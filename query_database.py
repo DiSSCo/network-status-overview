@@ -225,7 +225,11 @@ def select_countries_data(request_list: list, month=current_num_month):
     cur = conn.cursor()
 
     # Check if entity already exists (for same month)
-    query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {month} AND country_code IN {tuple(request_list)}".replace(',)', ')')
+    if request_list:
+        query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {month} AND country_code IN {tuple(request_list)}".replace(',)', ')')
+    else:
+        query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {month}"
+
     cur.execute(query)
     data = cur.fetchall()
 
