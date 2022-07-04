@@ -1,11 +1,16 @@
-import psycopg2
+from sqlalchemy import create_engine
+from sqlalchemy.dialects.postgresql import insert
+
 from configparser import ConfigParser
-import json
 from itertools import islice
 from datetime import datetime as dt
 
+# Import database models
+import model.countries
+import model.organisations
 
-current_num_month = dt.now().month
+
+current_month = dt.now().strftime('%B')
 
 # SonarLint constant: can be removed when GeoCASe organisations are automised
 # Temporary mapping between GBIF and GeoCASe
@@ -19,7 +24,7 @@ organisation_mapping = {
 }
 
 
-def config(filename='database.ini', section='postgresql'):
+def database_config(filename='database.ini', section='postgresql'):
     """ Sets up the basic database connection rules fur further usage
         :return: db: instance of the database's properties
     """
@@ -36,39 +41,9 @@ def config(filename='database.ini', section='postgresql'):
         for param in params:
             db[param[0]] = param[1]
 
-    return db
+    database_config = create_engine('postgresql+psycopg2://' + db['user'] + ':' + db['password'] + '@' + db['host'] + '/' + db['database'], echo=False)
 
-
-def insert_countries(country_entity) -> str:
-    columns: str = ''
-    values: str = ''
-
-    for key in country_entity.keys():
-        if len(columns) == 0:
-            columns += key
-        else:
-            columns += ', ' + key
-
-    for value in country_entity.values():
-        if len(values) == 0:
-            values += "'" + str(value) + "'"
-        else:
-            values += ", '" + str(value) + "'"
-
-    query = f"INSERT INTO countries ({columns}) VALUES ({values})"
-
-    return query
-
-
-def update_countries(country_entity, row) -> str:
-    column_values: str = ''
-
-    for key in country_entity:
-        column_values += f"{key} = '{country_entity[key]}', "
-
-    query = f"UPDATE countries SET {column_values[:-2]} WHERE id = {row[0]}"
-
-    return query
+    return database_config
 
 
 def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geocase_data):
@@ -98,77 +73,37 @@ def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geoc
         country_entity = {
             'country_code': country,
             'country_name': 'test',
-            'datasets_count': json.dumps({
+            'datasets_count': {
                 'gbif': gbif_datasets['countries'][country]
-            }),
-            'specimens_count': json.dumps({
+            },
+            'specimens_count': {
                 'gbif': gbif_specimens['countries'][country],
                 'geocase': geocase_dummy
-            }),
-            'issues_flags': json.dumps(gbif_issues_flags['countries'][country])
+            },
+            'issues_flags': gbif_issues_flags['countries'][country],
+            'month': current_month
         }
 
-        # Create database connection
-        params = config()
-        conn = psycopg2.connect(**params)
-        cur = conn.cursor()
+        # Prepare database connection
+        db_config = database_config()
 
-        # Check if entity already exists (for same month)
-        query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {current_num_month} AND country_code = '{country}'"
-        cur.execute(query)
-        row = cur.fetchone()
+        countries = model.countries.countries_model()
 
-        if row:
-            # Update existing record
-            query = update_countries(country_entity, row)
-        else:
-            # Insert new record
-            query = insert_countries(country_entity)
+        # Check if entity already exists (for same month) then upsert
+        query = insert(countries).values(country_entity)
+        query = query.on_conflict_do_update(
+            constraint='countries_un',
+            set_={
+                countries.c.last_updated: dt.now(),
+                countries.c.datasets_count: country_entity['datasets_count'],
+                countries.c.specimens_count: country_entity['specimens_count'],
+                countries.c.issues_flags: country_entity['issues_flags']
+            }
+        )
 
         # Execute query
-        cur.execute(query)
-
-        # Save and close database connection
-        conn.commit()
-        cur.close()
-
-
-def insert_organisations(organisation_entity) -> str:
-    columns: str = ''
-    values: str = ''
-
-    for key in organisation_entity.keys():
-        if len(columns) == 0:
-            columns += key
-        else:
-            columns += ', ' + key
-
-    for value in organisation_entity.values():
-        if value.__contains__("'"):
-            value = value.replace("'", "''")
-
-        if len(values) == 0:
-            values += "'" + str(value) + "'"
-        else:
-            values += ", '" + str(value) + "'"
-
-    query = f"INSERT INTO organisations ({columns}) VALUES ({values})"
-
-    return query
-
-
-def update_organisations(organisation_entity, row) -> str:
-    column_values: str = ''
-
-    for key in organisation_entity:
-        if organisation_entity[key].__contains__("'"):
-            organisation_entity[key] = organisation_entity[key].replace("'", "''")
-
-        column_values += f"{key} = '{organisation_entity[key]}', "
-
-    query = f"UPDATE organisations SET {column_values[:-2]} WHERE id = {row[0]}"
-
-    return query
+        with db_config.connect() as conn:
+            conn.execute(query)
 
 
 def insert_organisations_data(gbif_data, geocase_data):
@@ -191,42 +126,40 @@ def insert_organisations_data(gbif_data, geocase_data):
         organisation_entity = {
             'ror_id': gbif_data[organisation]['ror_id'],
             'organisation_name': organisation_name,
-            'datasets_count': json.dumps({
+            'datasets_count': {
                 'gbif': gbif_data[organisation]['totals']['datasets']
-            }),
-            'specimens_count': json.dumps({
+            },
+            'specimens_count': {
                 'gbif': gbif_data[organisation]['totals'],
                 'geocase': geocase_dummy
-            }),
-            'issues_flags': json.dumps(gbif_data[organisation]['issues_and_flags'])
+            },
+            'issues_flags': gbif_data[organisation]['issues_and_flags'],
+            'month': current_month
         }
 
-        # Create database connection
-        params = config()
-        conn = psycopg2.connect(**params)
-        cur = conn.cursor()
+        # Prepare database connection
+        db_config = database_config()
 
-        # Check if entity already exists (for same month)
-        query = f"SELECT * FROM organisations WHERE EXTRACT(MONTH from datetime) = {current_num_month} AND ror_id = '{gbif_data[organisation]['ror_id']}'"
-        cur.execute(query)
-        row = cur.fetchone()
+        organisations = model.organisations.organisations_model()
 
-        if row:
-            # Update existing record
-            query = update_organisations(organisation_entity, row)
-        else:
-            # Inserting new record
-            query = insert_organisations(organisation_entity)
+        # Check if entity already exists (for same month) then upsert
+        query = insert(organisations).values(organisation_entity)
+        query = query.on_conflict_do_update(
+            constraint='organisations_un',
+            set_={
+                organisations.c.last_updated: dt.now(),
+                organisations.c.datasets_count: organisation_entity['datasets_count'],
+                organisations.c.specimens_count: organisation_entity['specimens_count'],
+                organisations.c.issues_flags: organisation_entity['issues_flags']
+            }
+        )
 
         # Execute query
-        cur.execute(query)
-
-        # Save and close database connection
-        conn.commit()
-        cur.close()
+        with db_config.connect() as conn:
+            conn.execute(query)
 
 
-def select_countries_data(request_list: list, month=current_num_month):
+def select_countries_data(request_list: list, month=current_month):
     """ Calls on data belonging to requested countries out of database
         Transforms the data to an usable format
         :return: global_data: dictionary that possesses the reformed data
@@ -242,19 +175,18 @@ def select_countries_data(request_list: list, month=current_num_month):
         'NL': 'The Netherlands'
     }
 
-    # Create database connection
-    params = config()
-    conn = psycopg2.connect(**params)
-    cur = conn.cursor()
+    # Prepare database connection
+    db_config = database_config()
+
+    countries = model.countries.countries_model()
+    query = countries.select().where(countries.c.month == month)
 
     # Check if entity already exists (for same month)
-    query = f"SELECT * FROM countries WHERE EXTRACT(MONTH from datetime) = {month}"
-
     if request_list:
-        query += f" AND country_code IN {tuple(request_list)}".replace(',)', ')')
+        query = countries.select().where(countries.c.month == month, countries.c.country_code.in_(tuple(request_list)))
 
-    cur.execute(query)
-    data = cur.fetchall()
+    with db_config.connect() as conn:
+        countries_data = conn.execute(query).fetchall()
 
     # Set up basic response element
     global_data: dict = {
@@ -262,7 +194,7 @@ def select_countries_data(request_list: list, month=current_num_month):
     }
 
     # For each country, set data properties out of database
-    for country in data:
+    for country in countries_data:
         country_code = country[1]
         global_data[country_code] = {}
 
@@ -317,21 +249,24 @@ def select_countries_data(request_list: list, month=current_num_month):
     return global_data
 
 
-def select_organisations_data(request_list: list, month: int = current_num_month):
+def select_organisations_data(request_list: list, month: str = current_month):
     """ Calls on data belonging to requested organisations out of database
         Transforms the data to an usable format
         :return: global_data: dictionary that possesses the reformed data
     """
 
-    # Create database connection
-    params = config()
-    conn = psycopg2.connect(**params)
-    cur = conn.cursor()
+    # Prepare database connection
+    db_config = database_config()
+
+    organisations = model.organisations.organisations_model()
+    query = organisations.select().where(organisations.c.month == month)
 
     # Check if entity already exists (for same month)
-    query = f"SELECT * FROM organisations WHERE EXTRACT(MONTH from datetime) = {month} AND ror_id IN {tuple(request_list)}".replace(',)', ')')
-    cur.execute(query)
-    data = cur.fetchall()
+    if request_list:
+        query = organisations.select().where(organisations.c.month == month, organisations.c.ror_id.in_(tuple(request_list)))
+
+    with db_config.connect() as conn:
+        organisations_data = conn.execute(query).fetchall()
 
     # Set up basic response element
     global_data: dict = {
@@ -339,7 +274,7 @@ def select_organisations_data(request_list: list, month: int = current_num_month
     }
 
     # For each organisation, set data properties out of database
-    for organisation in data:
+    for organisation in organisations_data:
         ror_id = organisation[1]
         organisation_name = organisation[2]
         global_data[ror_id] = {}

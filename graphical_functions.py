@@ -49,7 +49,7 @@ def draw_infrastructures_total() -> go:
             go.Table(
                 header=dict(
                     values=['Infrastructure', 'Count', 'Percent'],
-                    fill_color='#737373',
+                    fill_color='#205692',
                     font=dict(
                         size=13,
                         color='white'
@@ -57,6 +57,8 @@ def draw_infrastructures_total() -> go:
                 ),
                 cells=dict(
                     values=[['GBIF', 'GeoCASe'], total_datasets, '100%'],
+                    fill_color='#ffffff',
+                    line_color='#d9d9d9',
                     font=dict(
                         size=12,
                         color='#333333'
@@ -346,7 +348,7 @@ def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> 
             go.Table(
                 header=dict(
                     values=['No. ISSUE FLAGS', 'Count'],
-                    fill_color='#737373',
+                    fill_color='#205692',
                     font=dict(
                         size=13,
                         color='white'
@@ -355,8 +357,9 @@ def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> 
                 cells=dict(
                     values=[plot_data[0], plot_data[1]],
                     fill_color=[['white'],
-                                ['red' if int(val) > 5000 else 'orange' if int(val) > 2500 else 'yellow' for val in plot_data[1]],
+                                ['#E74C3C' if int(val) > 5000 else '#F7A112' if int(val) > 2500 else '#ffdb4d' for val in plot_data[1]],
                                 ['white']],
+                    line_color='#d9d9d9',
                     font=dict(
                         size=12,
                         color='#333333'
