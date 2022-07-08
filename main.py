@@ -12,7 +12,7 @@ import csv_functions
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 
-def main():
+def main(request=None):
     options_list = [
         'all',
         'gbif_datasets',
@@ -24,9 +24,11 @@ def main():
         'geocase_publishers'
     ]
 
-    print(*options_list, sep='\n')
+    # Check if request is set via parameter, otherwise ask
+    if request is None:
+        print(*options_list, sep='\n')
 
-    request = input('\nSelect an option: ')
+        request = input('\nSelect an option: ')
 
     if request in options_list:
         # Check which function
@@ -60,7 +62,7 @@ def main():
 # Call on all functions, one at a time
 def execute_all():
     logging.info('Now executing all methods, one at a time')
-    total_count = 7
+    total_count = 6
     progress = 0
 
     # GBIF datasets
@@ -78,10 +80,11 @@ def execute_all():
     progress += 1
     logging.info(f'Completed: {progress} out of {total_count}')
 
+    # This part is currently not being used
     # GBIF issues and flags monthly
-    gbif_issues_flags_monthly()
-    progress += 1
-    logging.info(f'Completed: {progress} out of {total_count}')
+    # gbif_issues_flags_monthly()
+    # progress += 1
+    # logging.info(f'Completed: {progress} out of {total_count}')
 
     # GBIF institutions
     gbif_institutions()
@@ -178,7 +181,7 @@ def geocase_specimens():
     csv_file = csv_functions.write_geocase_specimens_to_csv(data)
 
     # Finishing statement
-    logging.info(f'\nProcess finished! CSVs was saved in: "{csv_file}"')
+    logging.info(f'\nProcess finished! CSV was saved in: "{csv_file}"')
 
 
 def geocase_publishers():
@@ -191,7 +194,7 @@ def geocase_publishers():
     csv_file = csv_functions.write_geocase_publishers_to_csv(data)
 
     # Finishing statement
-    logging.info(f'\nProcess finished! CSVs was saved in: "{csv_file}"')
+    logging.info(f'\nProcess finished! CSV was saved in: "{csv_file}"')
 
 
 # Call on main function

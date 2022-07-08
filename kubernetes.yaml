@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: network-status-overview
+  labels:
+    app: network-status-overview
+spec:
+  selector:
+    matchLabels:
+      app: network-status-overview
+  schedule: "0 0 2 * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: network-status-overview
+              image: network-status-overview
+              ports:
+                - containerPort: 80
