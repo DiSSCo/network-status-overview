@@ -25,7 +25,10 @@ def check_for_hottest_issues(y_values, data, issue_flag) -> dict:
 def prepare_draw_issues_flags_countries(publishing_country, return_length) -> list:
     x: list = []
     y: list = []
+    z: list = []
     y_values: dict = {}
+
+    print(publishing_country)
 
     for issue_flag in publishing_country['issues_and_flags']:
         # Check if issue flag number is high enough
@@ -35,18 +38,24 @@ def prepare_draw_issues_flags_countries(publishing_country, return_length) -> li
             # Check if some value in y is lower, if true remove and add new one
             y_values = check_for_hottest_issues(y_values, publishing_country, issue_flag)
 
-    # Refactoring y values to list and setting x values
-    for issue_flag in y_values:
-        x.append(issue_flag)
-        y.append(y_values[issue_flag])
+    sorted_y = sorted(y_values.items(), key=lambda t: t[1], reverse=True)
 
-    return [x, y]
+    # Refactoring y values to list and setting x values
+    for issue_flag in sorted_y:
+        percentage = round(int(publishing_country['issues_and_flags'][issue_flag[0]]['total']) / int(publishing_country['Total']) * 100, 2)
+
+        x.append(issue_flag[0])
+        y.append(issue_flag[1])
+        z.append(f"{issue_flag[1]} ({percentage}%)")
+
+    return [x, y, z]
 
 
 def prepare_draw_issues_flags_organisation(publisher, return_length) -> list:
     # Set y values
     x: list = []
     y: list = []
+    z: list = []
     y_values: dict = {}
 
     for issue_flag in publisher['issues_and_flags']:
@@ -56,9 +65,15 @@ def prepare_draw_issues_flags_organisation(publisher, return_length) -> list:
         else:
             y_values =check_for_hottest_issues(y_values, publisher, issue_flag)
 
-    # Refactoring y values to list and setting x values
-    for issue_flag in y_values:
-        x.append(issue_flag)
-        y.append(y_values[issue_flag])
+    sorted_y = sorted(y_values.items(), key=lambda t: t[1], reverse=True)
 
-    return [x, y]
+    # Refactoring y values to list and setting x values
+    for issue_flag in sorted_y:
+        percentage = round(int(publisher['issues_and_flags'][issue_flag[0]]['total']) / int(
+            publisher['Total']) * 100, 2)
+
+        x.append(issue_flag[0])
+        y.append(issue_flag[1])
+        z.append(f"{issue_flag[1]} ({percentage}%)")
+
+    return [x, y, z]

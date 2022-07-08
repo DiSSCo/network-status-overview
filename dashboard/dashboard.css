@@ -1,0 +1,131 @@
+.dashboardSection {
+    height: 500px;
+    padding-top: none !important;
+    background-color: #e7f6fe;
+}
+
+.dashboardCore {
+    height: 500px;
+}
+
+.dashboardPage {
+    padding: 0px 3% 0px 3% !important;
+    height: Calc(100% - 30px);
+}
+
+.pagePart {
+    padding-top: 2%;
+}
+
+
+/* Datasets count */
+
+.datasetsTitle {
+    font-weight: bold;
+    background-color: #205692;
+    width: 94%;
+    margin-left: 3%;
+    color: white;
+}
+
+.datasetsTitle.table {
+    width: 31%;
+    margin-left: 1%;
+}
+
+.datasetsProps {
+    background-color: #737373;
+    color: white;
+    height: 30px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.datasetRow {
+    font-size: 14px;
+}
+
+.datasetRow.gbif {
+    background-color: white;
+}
+
+.datasetRow.geocase {
+    background-color: #d9d9d9;
+}
+
+.progressBar.gbif {
+    background-color: cornflowerblue;
+}
+
+.progressBar.geocase {
+    background-color: green;
+}
+
+
+/* Datasets compare */
+.datasetsSelect {
+  background-color: white;
+  border: 1px solid #cccccc;
+}
+
+.datasetsDropdownButton {
+    background-color: white;
+    border: none;
+    text-align: left;
+    border: 1px solid #cccccc;
+}
+
+.datasetsComparisonRows {
+    background-color: #cccccc;
+}
+
+
+/* Issue Flags Table */
+.issueFlagsCounterTable {
+    margin-top: 1.4px;
+}
+
+.issueFlagsCounterTableHeader {
+    font-size: 13px;
+    color: white;
+    background-color: #205692;
+    border-left: 1px solid #d9d9d9;
+    margin-top: 1%;
+    text-align: center;
+    font-weight: normal;
+    height: 26.6px;
+}
+
+
+/* Page switcher */
+.pageSwitcher {
+    height: 40px;
+    margin-left: 1%;
+}
+
+.pageSwitcherButton {
+    background-color: #205692;
+    color: white;
+    font-weight: bold;
+    line-height: 40px;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    height: 40px;
+    padding: 0;
+    border: none;
+}
+
+.pageSwitcherField {
+    border: 1px solid #d9d9d9;
+    text-align: center;
+    font-size: 20px;
+}
+
+
+/* Dropdown */
+.dropdownList {
+    width: 100%;
+    overflow: auto;
+    background-color: white;
+}

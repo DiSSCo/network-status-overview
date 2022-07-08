@@ -1,6 +1,3 @@
-import plotly.graph_objects as go
-
-
 colors = [
     '#cc0000',
     '#39ac39',
@@ -25,67 +22,75 @@ basis_of_record = [
 
 
 def prepare_draw_specimens_bar_country(publishing_countries) -> list:
-    plot_data: list = []
     x: list = []
+    y: dict = {}
 
     # Setting x and y values
     for country in publishing_countries:
-        y = []
-        i = 0
+        x.append(country)
 
         for bor in basis_of_record:
-            x.append(bor)
-            y.append(int(publishing_countries[country][bor]))
+            if bor not in y:
+                y[bor] = []
 
-            plot_data.append(
-                go.Bar(
-                    name=country,
-                    x=[int(publishing_countries[country][bor])],
-                    y=[country],
-                    orientation='h',
-                    marker=dict(
-                        color=colors[i]
-                    ),
-                    text=bor,
-                    textposition='inside',
-                    insidetextanchor='start'
-                )
-            )
+            y[bor].append(int(publishing_countries[country][bor]))
 
-            i += 1
+    # Set bar stacks
+    plot_data = []
+    i = 0
+
+    for bor in basis_of_record:
+        plot_data.append({
+            'x': y[bor],
+            'y': x,
+            'type': 'bar',
+            'orientation': 'h',
+            'marker': {
+                'color': colors[i]
+            },
+            'text': bor,
+            'textposition': 'inside',
+            'insidetextanchor': 'start'
+        })
+
+        i += 1
 
     return plot_data
 
 
 def prepare_draw_specimens_bar_organisation(publishers) -> list:
-    plot_data: list = []
+    y: dict = {}
     x: list = []
 
     # Setting x and y values
     for publisher in publishers:
-        y = []
-        i = 0
+        x.append(publisher)
 
         for bor in basis_of_record:
-            x.append(bor)
-            y.append(int(publishers[publisher][bor]))
+            if bor not in y:
+                y[bor] = []
 
-            plot_data.append(
-                go.Bar(
-                    name=publishers[publisher]['organisation_name'],
-                    x=[int(publishers[publisher][bor])],
-                    y=[publishers[publisher]['organisation_name']],
-                    orientation='h',
-                    marker=dict(
-                        color=colors[i]
-                    ),
-                    text=bor,
-                    textposition='inside',
-                    insidetextanchor='start'
-                )
-            )
+            y[bor].append(int(publishers[publisher][bor]))
 
-            i += 1
+    # Set bar stacks
+    plot_data = []
+    i = 0
+
+    for bor in basis_of_record:
+        plot_data.append({
+            'x': y[bor],
+            'y': x,
+            'type': 'bar',
+            'orientation': 'h',
+            'marker': {
+                'color': colors[i]
+            },
+            'text': bor,
+            'textposition': 'inside',
+            'insidetextanchor': 'start'
+        })
+
+        i += 1
 
     return plot_data
 

@@ -184,7 +184,7 @@ def gather_institutions() -> dict:
         publishers[dataset['publishingOrganizationKey']]['totals']['datasets'] += 1
 
     # Match GBIF publishers with their ROR id from DiSSCo spreadsheet
-    csv_file = "csv_files/sources/microchanges.csv"
+    csv_file = "microchanges.csv"
 
     with open(csv_file, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)

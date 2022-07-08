@@ -1,11 +1,11 @@
 import logging
 
 
-# GBIF API functionality
+# GBIF and GeoCASe API functionality
 import GBIF_functions
-# GeoCASe API functionality
 import GeoCASe_functions
-import query_database
+# Database functionality
+import insert_to_database
 
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -24,7 +24,7 @@ def process_countries():
     logging.info('Receiving countries data from GeoCASe...')
     geocase_data = GeoCASe_functions.gather_data()
 
-    query_database.insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geocase_data)
+    insert_to_database.insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geocase_data)
 
 
 def process_organisations():
@@ -34,12 +34,12 @@ def process_organisations():
     logging.info('Receiving organisations data from GeoCASe...')
     geocase_data = GeoCASe_functions.gather_publishers()
 
-    query_database.insert_organisations_data(gbif_organisations_data, geocase_data)
+    insert_to_database.insert_organisations_data(gbif_organisations_data, geocase_data)
 
 
-def main2():
+def main():
     process_countries()
     process_organisations()
 
 
-main2()
+main()
