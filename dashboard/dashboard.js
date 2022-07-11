@@ -161,7 +161,7 @@ $(window).on('load', function() {
 function getOrganisationsList() {
   $.ajax({
     type: "GET",
-    url: "http://127.0.0.1:5000/get_organisations",
+    url: "http://127.0.0.1:8000/get_organisations",
     contentType: "application/json",
     success: function (result) {
       process(result);

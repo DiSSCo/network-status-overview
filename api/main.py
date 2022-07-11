@@ -1,6 +1,6 @@
 import plotly.utils
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_wtf.csrf import CSRFProtect
 import json
 import requests
@@ -8,8 +8,9 @@ import requests
 import graphical_functions
 
 app = Flask(__name__)
+CORS(app, allow_headers=['Content-Type', 'Access-Control-Allow-Origin',
+                         'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'])
 CSRFProtect(app)
-CORS(app)
 
 
 @app.route('/get_graph', methods=['GET'])
@@ -111,5 +112,5 @@ def get_countries():
     return jsonify(countries_list)
 
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+#     app.run()
