@@ -1,13 +1,14 @@
 import plotly.utils
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_wtf.csrf import CSRFProtect
 import json
 import requests
 
 import graphical_functions
 
 app = Flask(__name__)
-app.config['WTF_CSRF_ENABLED'] = True
+CSRFProtect(app)
 CORS(app)
 
 

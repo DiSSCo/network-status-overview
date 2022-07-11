@@ -41,8 +41,6 @@ def draw_infrastructures_total() -> list:
     publishing_countries = query_database.select_countries_data([])
     publishing_countries.pop('Total')
 
-    print(publishing_countries)
-
     # Count for total amount of datasets
     total_datasets = 0
 

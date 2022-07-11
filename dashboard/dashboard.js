@@ -1,3 +1,13 @@
+let csrf_token = "{{ csrf_token() }}";
+
+$.ajaxSetup({
+  beforeSend: function (xhr, settings) {
+    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+      xhr.setRequestHeader("X-CSRFToken", csrf_token);
+    }
+  }
+});
+
 function drawGraph(form, method, target, type = null, return_length = null) {
   if (target) {
     let formData = serializeFormData(form);
@@ -15,10 +25,10 @@ function drawGraph(form, method, target, type = null, return_length = null) {
       $.ajax({
         type: "GET",
         url: "http://127.0.0.1:5000/get_graph",
-        data: {'data': JSON.stringify(graph)},
+        data: { 'data': JSON.stringify(graph) },
         contentType: "application/json",
         success: function (result) {
-          process(result, method);
+          process(result);
         }
       });
     } else if (method == 'draw_infrastructures_total') {
@@ -29,10 +39,10 @@ function drawGraph(form, method, target, type = null, return_length = null) {
       $.ajax({
         type: "GET",
         url: "http://127.0.0.1:5000/get_graph",
-        data: {'data': JSON.stringify(graph)},
+        data: { 'data': JSON.stringify(graph) },
         contentType: "application/json",
         success: function (result) {
-          process(result, method)
+          process(result)
         }
       });
     } else {
@@ -143,7 +153,7 @@ function getCountriesList() {
     }
   }
 }
-window.onload = getCountriesList();
+window.addEventListener('load', getCountriesList());
 
 /* Function for getting a list of participating organisations and setting drop downs */
 function getOrganisationsList() {
@@ -164,8 +174,8 @@ function getOrganisationsList() {
 
     let id;
 
-    for (let organisation in data) {
-      organisation = data[organisation];
+    for (let o in data) {
+      organisation = data[o];
       organisation['ror'] = organisation['ror'].replace('https://ror.org/', '');
 
       /* Set drop downs */
@@ -207,7 +217,7 @@ function getOrganisationsList() {
   }
 
 }
-window.onload = getOrganisationsList();
+window.addEventListener('load', getOrganisationsList());
 
 function appendPieToDropdownList(id) {
   $('.dropdownList').on('click', '#' + id, function () {
@@ -304,4 +314,4 @@ function switchDashboardPage(method) {
   document.getElementById('pageSwitcherField').innerText = nextPage.getAttribute('pageNumber');
 }
 
-window.onload = drawGraph(null, 'draw_infrastructures_total', 'infrastructureDatasetsTableGraph');
+window.addEventListener('load', drawGraph(null, 'draw_infrastructures_total', 'infrastructureDatasetsTableGraph'));
