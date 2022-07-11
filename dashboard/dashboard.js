@@ -153,7 +153,9 @@ function getCountriesList() {
     }
   }
 }
-window.addEventListener('load', getCountriesList());
+$(window).on('load', function() {
+  getCountriesList();
+});
 
 /* Function for getting a list of participating organisations and setting drop downs */
 function getOrganisationsList() {
@@ -175,7 +177,7 @@ function getOrganisationsList() {
     let id;
 
     for (let o in data) {
-      organisation = data[o];
+      let organisation = data[o];
       organisation['ror'] = organisation['ror'].replace('https://ror.org/', '');
 
       /* Set drop downs */
@@ -215,9 +217,10 @@ function getOrganisationsList() {
       });
     }
   }
-
 }
-window.addEventListener('load', getOrganisationsList());
+$(window).on('load', function() {
+  getOrganisationsList();
+});
 
 function appendPieToDropdownList(id) {
   $('.dropdownList').on('click', '#' + id, function () {
@@ -314,4 +317,6 @@ function switchDashboardPage(method) {
   document.getElementById('pageSwitcherField').innerText = nextPage.getAttribute('pageNumber');
 }
 
-window.addEventListener('load', drawGraph(null, 'draw_infrastructures_total', 'infrastructureDatasetsTableGraph'));
+$(window).on('load', function() {
+  drawGraph(null, 'draw_infrastructures_total', 'infrastructureDatasetsTableGraph');
+});
