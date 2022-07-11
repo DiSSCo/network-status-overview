@@ -13,9 +13,9 @@ function drawGraph(form, method, target, type = null, return_length = null) {
       }
 
       $.ajax({
-        type: "POST",
+        type: "GET",
         url: "http://127.0.0.1:5000/get_graph",
-        data: JSON.stringify(graph),
+        data: {'data': JSON.stringify(graph)},
         contentType: "application/json",
         success: function (result) {
           process(result, method);
@@ -27,9 +27,9 @@ function drawGraph(form, method, target, type = null, return_length = null) {
       }
 
       $.ajax({
-        type: "POST",
+        type: "GET",
         url: "http://127.0.0.1:5000/get_graph",
-        data: JSON.stringify(graph),
+        data: {'data': JSON.stringify(graph)},
         contentType: "application/json",
         success: function (result) {
           process(result, method)
@@ -45,8 +45,8 @@ function drawGraph(form, method, target, type = null, return_length = null) {
     }
   }
 
-  function process(data, method) {
-    graph_data = JSON.parse(data);
+  function process(data) {
+    let graph_data = JSON.parse(data);
 
     if (method == 'draw_issues_and_flags') {
       /* Show HTML table */
@@ -58,9 +58,7 @@ function drawGraph(form, method, target, type = null, return_length = null) {
         staticPlot: true
       });
 
-      if (graph_data[2]) {
-        processSubs(graph_data[2])
-      }
+      processSubs(graph_data[2])
     } else {
       Plotly.newPlot(target, graph_data[0], graph_data[1], {
         responsive: true,
@@ -71,12 +69,12 @@ function drawGraph(form, method, target, type = null, return_length = null) {
 
   function processSubs(data) {
     /* Check if method is issues and flags, if so draw sub graphs */
-    for (subGraph in data) {
+    for (let subGraph in data) {
       let plot_data = data[subGraph]
 
       $('#issueFlagsCounterTable tr:last').after('<tr id="issueFlagSubGraph' + subGraph + '"> </tr>');
 
-      let target = 'issueFlagSubGraph' + subGraph;
+      target = 'issueFlagSubGraph' + subGraph;
 
       Plotly.newPlot(target, plot_data[0], plot_data[1], {
         responsive: true,
@@ -106,7 +104,7 @@ function getCountriesList() {
 
     let id;
 
-    for (country in data) {
+    for (let country in data) {
       /* Set drop downs */
       let dropDownRow = "<label class='dropdown-item'> <input type='checkbox' name='options[]' value='";
 
@@ -121,17 +119,13 @@ function getCountriesList() {
 
       // Specimens Count / Progress
       id = 'speciesCounterOption' + country;
-      specimensCounterDropdown.innerHTML += dropDownRow + country + "' id='" + id + "' class='speciesCounterOption'> " + data[country] + " </label>";;
+      specimensCounterDropdown.innerHTML += dropDownRow + country + "' id='" + id + "' class='speciesCounterOption'> " + data[country] + " </label>";
 
-      $('.dropdownList').on('click', '#' + id, function () {
-        checkOptions(this.id, 'speciesCounterOption', 1);
-        drawGraph(this.form, 'draw_specimens', 'speciesCounterGraph', 'pie');
-        drawGraph(this.form, 'draw_specimens_progress', 'speciesProgressGraph');
-      });
+      appendPieToDropdownList(id);
 
       // Specimen Comparison
       id = 'speciesCompareOption' + country;
-      specimensCompareDropdown.innerHTML += dropDownRow + country + "' id='" + id + "' class='speciesCompareOption'> " + data[country] + " </label>";;
+      specimensCompareDropdown.innerHTML += dropDownRow + country + "' id='" + id + "' class='speciesCompareOption'> " + data[country] + " </label>";
 
       $('.dropdownList').on('click', '#' + id, function () {
         checkOptions(this.id, 'speciesCompareOption', 4);
@@ -140,7 +134,7 @@ function getCountriesList() {
 
       // Issues and Flags
       id = 'issueFlagsCounterOption' + country;
-      issuesFlagsDropdown.innerHTML += dropDownRow + country + "' id='" + id + "' class='issueFlagsCounterOption'> " + data[country] + " </label>";;
+      issuesFlagsDropdown.innerHTML += dropDownRow + country + "' id='" + id + "' class='issueFlagsCounterOption'> " + data[country] + " </label>";
 
       $('.dropdownList').on('click', '#' + id, function () {
         checkOptions(this.id, 'issueFlagsCounterOption', 1);
@@ -170,7 +164,7 @@ function getOrganisationsList() {
 
     let id;
 
-    for (organisation in data) {
+    for (let organisation in data) {
       organisation = data[organisation];
       organisation['ror'] = organisation['ror'].replace('https://ror.org/', '');
 
@@ -188,17 +182,13 @@ function getOrganisationsList() {
 
       // Specimens Count / Progress
       id = 'speciesCounterOption' + organisation['ror'];
-      specimensCounterDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCounterOption'> " + organisation['name'] + " </label>";;
+      specimensCounterDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCounterOption'> " + organisation['name'] + " </label>";
 
-      $('.dropdownList').on('click', '#' + id, function () {
-        checkOptions(this.id, 'speciesCounterOption', 1);
-        drawGraph(this.form, 'draw_specimens', 'speciesCounterGraph', 'pie');
-        drawGraph(this.form, 'draw_specimens_progress', 'speciesProgressGraph');
-      });
+      appendPieToDropdownList(id);
 
       // Specimen Comparison
       id = 'speciesCompareOption' + organisation['ror'];
-      specimensCompareDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCompareOption'> " + organisation['name'] + " </label>";;
+      specimensCompareDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCompareOption'> " + organisation['name'] + " </label>";
 
       $('.dropdownList').on('click', '#' + id, function () {
         checkOptions(this.id, 'speciesCompareOption', 4);
@@ -207,7 +197,7 @@ function getOrganisationsList() {
 
       // Issues and Flags
       id = 'issueFlagsCounterOption' + organisation['ror'];
-      issuesFlagsDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='issueFlagsCounterOption'> " + organisation['name'] + " </label>";;
+      issuesFlagsDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='issueFlagsCounterOption'> " + organisation['name'] + " </label>";
 
       $('.dropdownList').on('click', '#' + id, function () {
         checkOptions(this.id, 'issueFlagsCounterOption', 1);
@@ -218,6 +208,14 @@ function getOrganisationsList() {
 
 }
 window.onload = getOrganisationsList();
+
+function appendPieToDropdownList(id) {
+  $('.dropdownList').on('click', '#' + id, function () {
+    checkOptions(this.id, 'speciesCounterOption', 1);
+    drawGraph(this.form, 'draw_specimens', 'speciesCounterGraph', 'pie');
+    drawGraph(this.form, 'draw_specimens_progress', 'speciesProgressGraph');
+  });
+}
 
 /* Function for serizaling form data to an object */
 function serializeFormData(form) {
@@ -240,10 +238,10 @@ function serializeFormData(form) {
     });
 
     /* Removing block brackets */
-    $(Object.keys(data)).each(function (i, key) {
+    $(Object.keys(data)).each(function (_i, key) {
       if (key.includes('[]')) {
-        oldKey = key;
-        newKey = key.replace('[]', '');
+        let oldKey = key;
+        let newKey = key.replace('[]', '');
 
         data[newKey] = data[oldKey];
         delete data[oldKey];
@@ -267,7 +265,7 @@ function checkOptions(id, className, length) {
 
 /* Function for switching actives */
 function switchMode(id, className) {
-  $('.' + className).each(function (i, element) {
+  $('.' + className).each(function (_i, element) {
     element.classList.add('d-none');
 
     $('#' + element.id + ' input').prop('disabled', true);
@@ -282,20 +280,20 @@ function switchDashboardPage(method) {
   let currentPage = $('.dashboardPage:not(".d-none")')[0];
 
   currentPage.classList.add('d-none');
-  nextPage = '';
+  let nextPage;
 
   if (method == 'up') {
     // Check if there is an up page
-    if (nextPage = document.querySelector('[pageNumber="' + (parseInt(currentPage.getAttribute('pageNumber')) + 1) + '"]')) {
+    nextPage = document.querySelector('[pageNumber="' + (parseInt(currentPage.getAttribute('pageNumber')) + 1) + '"]')
 
-    } else {
+    if (!nextPage) {
       nextPage = document.getElementsByClassName('dashboardPage')[0];
     }
   } else if (method == 'down') {
     // Check if there is an down page
-    if (nextPage = document.querySelector('[pageNumber="' + (parseInt(currentPage.getAttribute('pageNumber')) - 1) + '"]')) {
+    nextPage = document.querySelector('[pageNumber="' + (parseInt(currentPage.getAttribute('pageNumber')) - 1) + '"]')
 
-    } else {
+    if (!nextPage) {
       nextPage = Array.from(document.getElementsByClassName('dashboardPage')).at(-1);
     }
   }

@@ -3,18 +3,22 @@ import calendar as calendar
 
 # Internal functions
 import query_database
-import api.draw_functions.draw_specimens as prep_draw_specimens
-import api.draw_functions.draw_issues_flags_progress as prep_draw_issues_flags_progress
-import api.draw_functions.draw_issues_flags as prep_draw_issues_flags
-import api.draw_functions.draw_specimens_progress as prep_draw_specimens_progress
+import draw_functions.draw_specimens as prep_draw_specimens
+import draw_functions.draw_issues_flags_progress as prep_draw_issues_flags_progress
+import draw_functions.draw_issues_flags as prep_draw_issues_flags
+import draw_functions.draw_specimens_progress as prep_draw_specimens_progress
 
 
+# Message for when no mode is selected
 no_mode_message = 'No valid mode is selected'
+
+# Setting the current month
 current_month = dt.now().strftime('%B')
 
 # SonarLint: define constant instead of literal
 total_datasets_str = 'Total datasets'
 
+# Color schema used in the graphs
 colors = [
     '#cc0000',
     '#39ac39',
@@ -248,7 +252,7 @@ def draw_specimens(mode: str, request_list: list, method: str) -> list:
     return [graph_data, graph_layout]
 
 
-def draw_issue_flag_progress(mode: str, monthly_progress) -> list:
+def draw_issue_flag_progress(mode: str, monthly_progress: dict) -> list:
     # Prepare quarter months
     quarter_months: list = []
     check_month = dt.now().month
@@ -264,7 +268,9 @@ def draw_issue_flag_progress(mode: str, monthly_progress) -> list:
 
         counter += 1
 
-    # Check which mode is being called
+    # Check which mode is being called and prepare graph data
+    plot_data: list = []
+
     if mode == 'publishing_country':
         # Prepare graph data
         plot_data = prep_draw_issues_flags_progress.prepare_draw_issues_flags_progress_country(quarter_months,
@@ -306,11 +312,9 @@ def draw_issue_flag_progress(mode: str, monthly_progress) -> list:
     return [graph_data, graph_layout]
 
 
-# Currently, for a single publishing country or publisher
-# Takes top 10 of the highest issues and flags and draws graph
 def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> list:
-    """ Calls on the data belonging to the requested publishing countries / publishers
-        Transforms the data to a usable format for Plotly
+    """ Calls on the data belonging to the requested publishing country / publisher
+        Transforms the ten data to a usable format for Plotly
         :return: Draws a graph based on the amount of issues and flags
     """
 
@@ -395,9 +399,8 @@ def draw_issues_and_flags(mode: str, request_list: list, return_length: int) -> 
     return [graph_data, graph_layout, sub_graphs]
 
 
-# Currently, for a single publishing country or publisher
 def draw_specimens_progress(mode: str, request_list: list) -> list:
-    """ Calls on the data belonging to the requested publishing countries / publishers
+    """ Calls on the data belonging to the requested publishing country / publisher
         Transforms the data to a usable format for Plotly
         :return: Draws a graph based on the amount of specimens per basis of record per month
     """

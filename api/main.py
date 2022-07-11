@@ -2,45 +2,55 @@ import plotly.utils
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
-# import requests
+import requests
 
 import graphical_functions
 
 app = Flask(__name__)
+app.config['WTF_CSRF_ENABLED'] = True
 CORS(app)
 
 
-@app.route('/get_graph', methods=['POST', 'GET'])
+@app.route('/get_graph', methods=['GET'])
 def draw_graph():
-    if request.method == 'POST':
-        data = request.get_json()
+    """ Receives the data from the view and decides which graph needs to be drawn
+        Send data to the draw_functions_menu function for further execution
+        :return: The graph in string form to be rendered in the Javascript
+    """
 
-        method = data['method']
+    data = json.loads(request.args.get('data'))
 
-        mode = ''
-        if 'mode' in data:
-            mode = data['mode']
+    method = data['method']
 
-        r = ''
-        if 'request' in data:
-            r = data['request']
+    mode = ''
+    if 'mode' in data:
+        mode = data['mode']
 
-        return_length = ''
-        if 'return_length' in data:
-            return_length = data['return_length']
+    r = ''
+    if 'request' in data:
+        r = data['request']
 
-        bar_type = ''
-        if 'type' in data:
-            bar_type = data['type']
+    return_length = ''
+    if 'return_length' in data:
+        return_length = data['return_length']
 
-        fig = draw_functions_menu(method, mode, r, return_length, bar_type)
+    bar_type = ''
+    if 'type' in data:
+        bar_type = data['type']
 
-        graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    fig = draw_functions_menu(method, mode, r, return_length, bar_type)
 
-        return jsonify(graph_json)
+    graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return jsonify(graph_json)
 
 
-def draw_functions_menu(method, mode, r, return_length, bar_type) -> list:
+def draw_functions_menu(method: str, mode: str, r: list, return_length: int, bar_type: str) -> list:
+    """ Receives the prepared data from the draw_graph function
+        Based upon the chosen method, calls on the defined function for preparing the graphical data
+        :return: The graphical data
+    """
+
     fig: list = []
 
     if method == 'draw_datasets':
@@ -59,29 +69,21 @@ def draw_functions_menu(method, mode, r, return_length, bar_type) -> list:
 
 @app.route('/get_organisations', methods=['GET'])
 def get_organisations():
-    # response = requests.get('https://sandbox.dissco.tech/api/v1/organisation/tuples')
+    """ Retrieves the list of organisations from the database
+        :return: The organisations list
+    """
 
-    organisations_list = [
-        {
-            'ror': '01tv5y993',
-            'name': 'Natural History Museum Vienna'
-        },
-        {
-            'ror': '0443cwa12',
-            'name': 'Tallinn University of Technology'
-        },
-        {
-            'ror': '052d1a351',
-            'name': 'Museum für Naturkunde'
-        }
-    ]
+    response = requests.get('https://sandbox.dissco.tech/api/v1/organisation/tuples')
 
-    # return jsonify(response.json())
-    return jsonify(organisations_list)
+    return jsonify(response.json())
 
 
 @app.route('/get_countries', methods=['GET'])
 def get_countries():
+    """ Creates the list of countries
+        :return: The organisations list
+    """
+
     # List needs to be created from valid source
     countries_list = {'AT': 'Austria',
                       'BE': 'Belgium',

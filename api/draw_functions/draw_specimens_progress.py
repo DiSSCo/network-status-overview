@@ -1,8 +1,8 @@
-import query_database
 from datetime import datetime as dt
 import calendar
-import plotly.graph_objects as go
 
+
+# List of used specimen types
 basis_of_record = [
     'PRESERVED_SPECIMEN',
     'FOSSIL_SPECIMEN',
@@ -13,10 +13,16 @@ basis_of_record = [
     'ROCK',
     'OTHER_GEOLOGICAL'
 ]
+# List the months of the year
 months = list(calendar.month_name)[1:]
 
 
-def prepare_specimens_progress_country(country_data) -> list:
+def prepare_specimens_progress_country(country_data: dict) -> list:
+    """ Sub function for drawing the specimens progress country graph
+        Function prepares the graphical data and sets the x and y values
+        :return: Returns the graphical values
+    """
+
     x: list = []
     y: dict = {}
 
@@ -38,7 +44,12 @@ def prepare_specimens_progress_country(country_data) -> list:
     return plot_data
 
 
-def prepare_specimens_progress_organisation(organisation_data):
+def prepare_specimens_progress_organisation(organisation_data: dict):
+    """ Sub function for drawing the specimens progress organisation graph
+        Function prepares the graphical data and sets the x and y values
+        :return: Returns the graphical values
+    """
+
     x: list = []
     y: dict = {}
 

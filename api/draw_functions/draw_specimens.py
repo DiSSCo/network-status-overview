@@ -1,3 +1,4 @@
+# Color schema used in the graphs
 colors = [
     '#cc0000',
     '#39ac39',
@@ -9,6 +10,7 @@ colors = [
     '#ffccff'
 ]
 
+# List of used specimen types
 basis_of_record = [
     'PRESERVED_SPECIMEN',
     'FOSSIL_SPECIMEN',
@@ -21,7 +23,12 @@ basis_of_record = [
 ]
 
 
-def prepare_draw_specimens_bar_country(publishing_countries) -> list:
+def prepare_draw_specimens_bar_country(publishing_countries: dict) -> list:
+    """ Sub function for drawing the specimens country bar graph
+        Function prepares the graphical data and sets the x and y values
+        :return: Returns the graphical values
+    """
+
     x: list = []
     y: dict = {}
 
@@ -58,7 +65,12 @@ def prepare_draw_specimens_bar_country(publishing_countries) -> list:
     return plot_data
 
 
-def prepare_draw_specimens_bar_organisation(publishers) -> list:
+def prepare_draw_specimens_bar_organisation(publishers: dict) -> list:
+    """ Sub function for drawing the specimens organisation bar graph
+        Function prepares the graphical data and sets the x and y values
+        :return: Returns the graphical values
+    """
+
     y: dict = {}
     x: list = []
 
@@ -95,8 +107,14 @@ def prepare_draw_specimens_bar_organisation(publishers) -> list:
     return plot_data
 
 
-def prepare_draw_specimens_pie_country(publishing_countries) -> list:
+def prepare_draw_specimens_pie_country(publishing_countries: dict) -> list:
+    """ Sub function for drawing the specimens country pie graph
+        Function prepares the graphical data and sets the x and y values
+        :return: Returns the graphical values
+    """
+
     x: list = []
+    y: list = []
 
     # Setting x and y values
     for country in publishing_countries:
@@ -109,8 +127,14 @@ def prepare_draw_specimens_pie_country(publishing_countries) -> list:
     return [x, y]
 
 
-def prepare_draw_specimens_pie_organisation(publishers) -> list:
+def prepare_draw_specimens_pie_organisation(publishers: dict) -> list:
+    """ Sub function for drawing the specimens organisation pie graph
+        Function prepares the graphical data and sets the x and y values
+        :return: Returns the graphical values
+    """
+
     x: list = []
+    y: list = []
 
     # Setting x and y values
     for publisher in publishers:

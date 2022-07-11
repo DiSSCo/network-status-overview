@@ -8,9 +8,10 @@ from datetime import datetime as dt
 import model.countries
 import model.organisations
 
+
+# Setting the current month
 current_month = dt.now().strftime('%B')
 
-# SonarLint constant: can be removed when GeoCASe organisations are automized
 # Temporary mapping between GBIF and GeoCASe
 organisation_mapping = {
     'Museum für Naturkunde': 'Museum für Naturkunde',
@@ -22,7 +23,7 @@ organisation_mapping = {
 }
 
 
-def database_config(filename='database.ini', section='postgresql'):
+def database_config(filename: str = 'database.ini', section: str = 'postgresql'):
     """ Sets up the basic database connection rules fur further usage
         :return: db: instance of the database's properties
     """
@@ -46,7 +47,7 @@ def database_config(filename='database.ini', section='postgresql'):
     return database_config
 
 
-def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geocase_data):
+def insert_countries_data(gbif_datasets: dict, gbif_specimens: dict, gbif_issues_flags: dict, geocase_data: dict):
     """ Transforms the received countries' data to a standardised format
         Saves the formatted data in the database by insert or update
     """
@@ -109,7 +110,7 @@ def insert_countries_data(gbif_datasets, gbif_specimens, gbif_issues_flags, geoc
             conn.execute(query)
 
 
-def insert_organisations_data(gbif_data, geocase_data):
+def insert_organisations_data(gbif_data: dict, geocase_data: dict):
     """ Transforms the received organisations' data to a standardised format
         Saves the formatted data in the database by insert or update
     """

@@ -191,10 +191,9 @@ def gather_institutions() -> dict:
         next(reader)
 
         for row in reader:
-            for publisher in publishers:
-                if publisher in row:
-                    publishers[publisher]['name'] = row[4]
-                    publishers[publisher]['ror_id'] = row[5]
+            if row[8] in publishers:
+                publishers[row[8]]['name'] = row[4]
+                publishers[row[8]]['ror_id'] = row[5]
 
     # Calculate metrics for basis of record per publisher and issues/flags
     basis_of_record = ['PRESERVED_SPECIMEN', 'FOSSIL_SPECIMEN', 'LIVING_SPECIMEN', 'MATERIAL_SAMPLE']

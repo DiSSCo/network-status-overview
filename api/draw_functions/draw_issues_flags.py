@@ -1,4 +1,8 @@
-def check_for_hottest_issues(y_values, data, issue_flag) -> dict:
+def check_for_hottest_issues(y_values: dict, data: dict, issue_flag: str) -> dict:
+    """ Sub function for checking the hottest issues and flags of a country or organisation
+        :return: Returns the y values dictionary with the ten hottest issues
+    """
+
     # Check if some value in y is lower, if true remove and add new one
     difference = {}
 
@@ -22,13 +26,16 @@ def check_for_hottest_issues(y_values, data, issue_flag) -> dict:
     return y_values
 
 
-def prepare_draw_issues_flags_countries(publishing_country, return_length) -> list:
+def prepare_draw_issues_flags_countries(publishing_country: dict, return_length: int) -> list:
+    """ Sub function for drawing the issues and flags country graph
+        Function prepares the graphical data and sets the x, y and z (names) values
+        :return: Returns the graphical values
+    """
+
     x: list = []
     y: list = []
     z: list = []
     y_values: dict = {}
-
-    print(publishing_country)
 
     for issue_flag in publishing_country['issues_and_flags']:
         # Check if issue flag number is high enough
@@ -42,7 +49,8 @@ def prepare_draw_issues_flags_countries(publishing_country, return_length) -> li
 
     # Refactoring y values to list and setting x values
     for issue_flag in sorted_y:
-        percentage = round(int(publishing_country['issues_and_flags'][issue_flag[0]]['total']) / int(publishing_country['Total']) * 100, 2)
+        percentage = round(int(publishing_country['issues_and_flags'][issue_flag[0]]['total']) / int(
+            publishing_country['Total']) * 100, 2)
 
         x.append(issue_flag[0])
         y.append(issue_flag[1])
@@ -51,7 +59,12 @@ def prepare_draw_issues_flags_countries(publishing_country, return_length) -> li
     return [x, y, z]
 
 
-def prepare_draw_issues_flags_organisation(publisher, return_length) -> list:
+def prepare_draw_issues_flags_organisation(publisher: dict, return_length: int) -> list:
+    """ Sub function for drawing the issues and flags organisation graph
+        Function prepares the graphical data and sets the x, y and z (names) values
+        :return: Returns the graphical values
+    """
+
     # Set y values
     x: list = []
     y: list = []
@@ -63,7 +76,7 @@ def prepare_draw_issues_flags_organisation(publisher, return_length) -> list:
         if len(y_values) < return_length:
             y_values[issue_flag] = int(publisher['issues_and_flags'][issue_flag]['total'])
         else:
-            y_values =check_for_hottest_issues(y_values, publisher, issue_flag)
+            y_values = check_for_hottest_issues(y_values, publisher, issue_flag)
 
     sorted_y = sorted(y_values.items(), key=lambda t: t[1], reverse=True)
 

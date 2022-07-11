@@ -3,13 +3,18 @@ from sqlalchemy import create_engine, extract, and_
 from configparser import ConfigParser
 from itertools import islice
 from datetime import datetime as dt, timedelta
+from typing import Union
 
 # Import database models
 import model.countries
 import model.organisations
 
 
+# Setting current month
 current_month = dt.now().strftime('%B')
+
+# Sonar constant
+sonar_constant_datasets = 'Total datasets'
 
 # Temporary mapping between GBIF and GeoCASe
 country_mapping = {
@@ -21,7 +26,6 @@ country_mapping = {
     'NL': 'The Netherlands'
 }
 
-# SonarLint constant: can be removed when GeoCASe organisations are automised
 # Temporary mapping between GBIF and GeoCASe
 organisation_mapping = {
     'Museum für Naturkunde': 'Museum für Naturkunde',
@@ -33,7 +37,7 @@ organisation_mapping = {
 }
 
 
-def database_config(filename='../database.ini', section='postgresql'):
+def database_config(filename: str = '../database.ini', section: str = 'postgresql'):
     """ Sets up the basic database connection rules fur further usage
         :return: db: instance of the database's properties
     """
@@ -55,11 +59,16 @@ def database_config(filename='../database.ini', section='postgresql'):
     return database_config
 
 
-def prepare_country(global_data, country, country_code):
+def prepare_country(global_data: dict, country: list, country_code: str) -> dict:
+    """ Prepares the country data that was found by the database query
+        Sets all different values regarding the GBIF and GeoCASe data
+        :return: Returns the global dict with the added country data
+    """
+
     global_data[country_code] = {}
 
     # Add GBIF datasets
-    global_data[country_code]['Total datasets'] = country[4]['gbif']
+    global_data[country_code][sonar_constant_datasets] = country[4]['gbif']
 
     # General totals
     global_data['Total'] += int(country[5]['gbif']['total'])
@@ -115,7 +124,12 @@ def prepare_country(global_data, country, country_code):
     return global_data
 
 
-def prepare_countries(global_data, country, country_code):
+def prepare_countries(global_data: dict, country: list, country_code: str) -> dict:
+    """ Prepares the multiple countries' data that was found by the database query
+        Sets all different values regarding the GBIF and GeoCASe data
+         :return: Returns the global dict with the added countries' data
+    """
+
     month_save = global_data[country_code]
     global_data[country_code] = {}
     global_data[country_code][month_save['month']] = month_save
@@ -124,7 +138,7 @@ def prepare_countries(global_data, country, country_code):
     global_data[country_code][month] = {}
 
     # Add GBIF datasets
-    global_data[country_code][month]['Total datasets'] = country[4]['gbif']
+    global_data[country_code][month][sonar_constant_datasets] = country[4]['gbif']
 
     # Add GBIF basis of record
     global_data[country_code][month]['FOSSIL_SPECIMEN'] = country[5]['gbif']['FOSSIL_SPECIMEN']
@@ -177,9 +191,9 @@ def prepare_countries(global_data, country, country_code):
     return global_data
 
 
-def select_countries_data(request_list: list, month=current_month):
+def select_countries_data(request_list: list, month: Union[str, list] = current_month) -> dict:
     """ Calls on data belonging to requested countries out of database
-        Transforms the data to an usable format
+        Transforms the data to a usable format
         :return: global_data: dictionary that possesses the reformed data
     """
 
@@ -234,11 +248,16 @@ def select_countries_data(request_list: list, month=current_month):
     return global_data
 
 
-def prepare_organisation(global_data, organisation, ror_id, organisation_name):
+def prepare_organisation(global_data: dict, organisation: list, ror_id: str, organisation_name: str) -> dict:
+    """ Prepares the organisation data that was found by the database query
+        Sets all different values regarding the GBIF and GeoCASe data
+        :return: Returns the global dict with the added organisation data
+    """
+
     global_data[ror_id] = {}
 
     # Add GBIF datasets
-    global_data[ror_id]['Total datasets'] = organisation[4]['gbif']
+    global_data[ror_id][sonar_constant_datasets] = organisation[4]['gbif']
     global_data[ror_id]['organisation_name'] = organisation_name
 
     # Add GBIF basis of record
@@ -301,7 +320,12 @@ def prepare_organisation(global_data, organisation, ror_id, organisation_name):
     return global_data
 
 
-def prepare_organisations(global_data, organisation, ror_id, organisation_name):
+def prepare_organisations(global_data: dict, organisation: list, ror_id: str, organisation_name: str) -> dict:
+    """ Prepares the organisation's data that was found by the database query
+        Sets all different values regarding the GBIF and GeoCASe data
+        :return: Returns the global dict with the added organisation's data
+    """
+
     month_save = global_data[ror_id]
     global_data[ror_id] = {}
     global_data[ror_id][month_save['month']] = month_save
@@ -310,7 +334,7 @@ def prepare_organisations(global_data, organisation, ror_id, organisation_name):
     global_data[ror_id][month] = {}
 
     # Add GBIF datasets
-    global_data[ror_id][month]['Total datasets'] = organisation[4]['gbif']
+    global_data[ror_id][month][sonar_constant_datasets] = organisation[4]['gbif']
     global_data[ror_id]['organisation_name'] = organisation_name
 
     # Add GBIF basis of record
@@ -373,7 +397,7 @@ def prepare_organisations(global_data, organisation, ror_id, organisation_name):
     return global_data
 
 
-def select_organisations_data(request_list: list, month=current_month):
+def select_organisations_data(request_list: list, month: Union[str, list] = current_month) -> dict:
     """ Calls on data belonging to requested organisations out of database
         Transforms the data to an usable format
         :return: global_data: dictionary that possesses the reformed data
