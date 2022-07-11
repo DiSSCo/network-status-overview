@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: network-status-api-deployment
+  labels:
+    app: network-status-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: network-status-api
+  template:
+    metadata:
+      labels:
+        app: network-status-api
+    spec:
+      containers:
+        - name: network-status-api
+          image: public.ecr.aws/dissco/network-status-api
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false

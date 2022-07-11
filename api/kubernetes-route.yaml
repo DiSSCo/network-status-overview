@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: network-status-api-service
+spec:
+  selector:
+    app: network-status-api
+  ports:
+    - protocol: TCP
+      port: 8000
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: network-status-api-route
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sandbox.dissco.tech`) && PathPrefix(`/api/v1/network-overview`)
+      kind: Rule
+      services:
+        - name: network-status-api-service
+          namespace: default
+          port: 8000
+      middlewares:
+        - name: network-status-api-route-strip-prefix
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: network-status-api-route-strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/v1/network-overview

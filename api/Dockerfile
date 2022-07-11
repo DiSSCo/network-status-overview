@@ -29,4 +29,4 @@ EXPOSE 8000
 USER 1001
 
 # Command to run on container start
-CMD [ "gunicorn", "main:app", "localhost:8083"]
+CMD ["gunicorn"  , "--bind", "0.0.0.0:8000", "main:app"]
