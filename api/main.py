@@ -1,6 +1,6 @@
 import plotly.utils
 from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
 import json
 import requests
@@ -110,7 +110,3 @@ def get_countries():
                       'GB': 'United Kingdom'}
 
     return jsonify(countries_list)
-
-
-# if __name__ == '__main__':
-#     app.run()

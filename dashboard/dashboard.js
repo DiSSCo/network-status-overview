@@ -24,7 +24,7 @@ function drawGraph(form, method, target, type = null, return_length = null) {
 
       $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/get_graph",
+        url: "https://sandbox.dissco.tech/api/v1/network-overview/get_graph",
         data: { 'data': JSON.stringify(graph) },
         contentType: "application/json",
         success: function (result) {
@@ -38,7 +38,7 @@ function drawGraph(form, method, target, type = null, return_length = null) {
 
       $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/get_graph",
+        url: "https://sandbox.dissco.tech/api/v1/network-overview/get_graph",
         data: { 'data': JSON.stringify(graph) },
         contentType: "application/json",
         success: function (result) {
@@ -99,7 +99,7 @@ function getCountriesList() {
   /* Receive countries data */
   $.ajax({
     type: "GET",
-    url: "http://127.0.0.1:5000/get_countries",
+    url: "https://sandbox.dissco.tech/api/v1/network-overview/get_countries",
     contentType: "application/json",
     success: function (result) {
       process(result);
@@ -161,7 +161,7 @@ $(window).on('load', function() {
 function getOrganisationsList() {
   $.ajax({
     type: "GET",
-    url: "http://127.0.0.1:8000/get_organisations",
+    url: "https://sandbox.dissco.tech/api/v1/network-overview/get_organisations",
     contentType: "application/json",
     success: function (result) {
       process(result);

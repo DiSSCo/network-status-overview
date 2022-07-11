@@ -1,7 +1,11 @@
 from sqlalchemy import Table, Column, MetaData, Integer, String, DATETIME, Date, JSON
 
 
-def organisations_model():
+def organisations_model() -> Table:
+    """ Model for organisations table of database
+        :return: Returns the model
+    """
+
     metadata = MetaData()
 
     organisations = Table(

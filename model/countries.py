@@ -1,7 +1,11 @@
 from sqlalchemy import Table, Column, MetaData, Integer, String, DATETIME, Date, JSON
 
 
-def countries_model():
+def countries_model() -> Table:
+    """ Model for countries table of database
+        :return: Returns the model
+    """
+
     metadata = MetaData()
 
     countries = Table(
