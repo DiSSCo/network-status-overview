@@ -13,6 +13,10 @@
     height: Calc(100% - 30px);
 }
 
+.dashboardPage.opacity {
+    opacity: 0;
+}
+
 .pagePart {
     padding-top: 2%;
 }

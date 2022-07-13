@@ -68,7 +68,14 @@ function drawGraph(form, method, target, type = null, return_length = null) {
         staticPlot: true
       });
 
-      processSubs(graph_data[2])
+      processSubs(graph_data[2]);
+
+      if (document.querySelector('[pageNumber="2"]').classList.contains('opacity')) {
+        document.querySelector('[pageNumber="2"]').classList.add('d-none')
+        document.querySelector('[pageNumber="2"]').classList.remove('opacity');
+        document.querySelector('[pageNumber="3"]').classList.add('d-none')
+        document.querySelector('[pageNumber="3"]').classList.remove('opacity');
+      }
     } else {
       Plotly.newPlot(target, graph_data[0], graph_data[1], {
         responsive: true,
@@ -95,18 +102,18 @@ function drawGraph(form, method, target, type = null, return_length = null) {
 }
 
 /* Function for getting a list of participating countries and setting drop downs */
-function getCountriesList() {
+function getCountriesList(country_code = null) {
   /* Receive countries data */
   $.ajax({
     type: "GET",
     url: "https://sandbox.dissco.tech/api/v1/network-overview/get_countries",
     contentType: "application/json",
     success: function (result) {
-      process(result);
+      process(result, country_code);
     }
   });
 
-  function process(data) {
+  function process(data, country_code = null) {
     let datasetsDropdown = document.getElementById('datasets_country_dropdown');
     let specimensCounterDropdown = document.getElementById('specimens_counter_country_dropdown');
     let specimensCompareDropdown = document.getElementById('specimens_compare_country_dropdown');
@@ -151,11 +158,33 @@ function getCountriesList() {
         drawGraph(this.form, 'draw_issues_and_flags', 'issueFlagsCounterGraph', null, 10)
       });
     }
+
+    /* Check if data needs to be loaded for country */
+    if (country_code) {
+      /* Set modes to publishing counry */
+      document.getElementById('datasetsSelect').value = 'publishing_country';
+      document.getElementById('specimensCounterSelect').value = 'publishing_country';
+      document.getElementById('specimensCompareSelect').value = 'publishing_country';
+      document.getElementById('issueFlagSelect').value = 'publishing_country';
+
+      checkVisibleDropdowns(process_further());
+
+      function process_further() {
+        /* Render graphs */
+        document.getElementById('datasets' + country_code).click();
+        document.getElementById('speciesCounterOption' + country_code).click();
+        document.getElementById('speciesCompareOption' + country_code).click();
+        document.getElementById('issueFlagsCounterOption' + country_code).click();
+      }
+    } else {
+      /* Set page 2 and 3 on refresh invisible */
+      document.querySelector('[pageNumber="2"]').classList.add('d-none')
+      document.querySelector('[pageNumber="2"]').classList.remove('opacity');
+      document.querySelector('[pageNumber="3"]').classList.add('d-none')
+      document.querySelector('[pageNumber="3"]').classList.remove('opacity');
+    }
   }
 }
-$(window).on('load', function() {
-  getCountriesList();
-});
 
 /* Function for getting a list of participating organisations and setting drop downs */
 function getOrganisationsList() {
@@ -218,9 +247,49 @@ function getOrganisationsList() {
     }
   }
 }
-$(window).on('load', function() {
-  getOrganisationsList();
-});
+
+function checkVisibleDropdowns(callback = null) {
+  let datasetsSelect = document.getElementById('datasetsSelect');
+  let specimensCounterSelect = document.getElementById('specimensCounterSelect');
+  let specimensCompareSelect = document.getElementById('specimensCompareSelect');
+  let issueFlagSelect = document.getElementById('issueFlagSelect');
+
+  if (datasetsSelect.value == 'publishing_country') {
+    document.getElementById('publishing_country_datasets').classList.remove('d-none');
+    document.getElementById('publisher_datasets').classList.add('d-none');
+  } else {
+    document.getElementById('publisher_datasets').classList.remove('d-none');
+    document.getElementById('publishing_country_datasets').classList.add('d-none');
+  }
+
+  if (specimensCounterSelect.value == 'publishing_country') {
+    document.getElementById('publishing_country_speciesCounter').classList.remove('d-none');
+    document.getElementById('publisher_speciesCounter').classList.add('d-none');
+  } else {
+    document.getElementById('publisher_speciesCounter').classList.remove('d-none');
+    document.getElementById('publishing_country_speciesCounter').classList.add('d-none');
+  }
+
+  if (specimensCompareSelect.value == 'publishing_country') {
+    document.getElementById('publishing_country_speciesCompare').classList.remove('d-none');
+    document.getElementById('publisher_speciesCompare').classList.add('d-none');
+  } else {
+    document.getElementById('publisher_speciesCompare').classList.remove('d-none');
+    document.getElementById('publishing_country_speciesCompare').classList.add('d-none');
+  }
+
+  if (issueFlagSelect.value == 'publishing_country') {
+    document.getElementById('publishing_country_issueFlagsCounter').classList.remove('d-none');
+    document.getElementById('publisher_issueFlagsCounter').classList.add('d-none');
+  } else {
+    document.getElementById('publisher_issueFlagsCounter').classList.remove('d-none');
+    document.getElementById('publishing_country_issueFlagsCounter').classList.add('d-none');
+  }
+
+  if (callback) {
+    callback;
+  }
+}
 
 function appendPieToDropdownList(id) {
   $('.dropdownList').on('click', '#' + id, function () {
@@ -317,6 +386,12 @@ function switchDashboardPage(method) {
   document.getElementById('pageSwitcherField').innerText = nextPage.getAttribute('pageNumber');
 }
 
-$(window).on('load', function() {
+$(document).ready(function () {
+  getCountriesList();
+
+  getOrganisationsList();
+
+  checkVisibleDropdowns();
+
   drawGraph(null, 'draw_infrastructures_total', 'infrastructureDatasetsTableGraph');
 });

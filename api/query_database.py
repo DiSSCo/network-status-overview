@@ -37,7 +37,7 @@ organisation_mapping = {
 }
 
 
-def database_config(filename: str = '../database.ini', section: str = 'postgresql'):
+def database_config(filename: str = 'database.ini', section: str = 'postgresql'):
     """ Sets up the basic database connection rules fur further usage
         :return: db: instance of the database's properties
     """

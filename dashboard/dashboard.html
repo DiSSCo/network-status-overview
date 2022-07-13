@@ -60,7 +60,7 @@
                                                 <div class="col-md-12">
                                                     <select name="mode"
                                                         onchange=" switchMode(this.value + '_datasets', 'datasetsDropdown'); drawGraph(this.form, 'draw_datasets', 'datasetsGraph');"
-                                                        class="datasetsSelect w-100">
+                                                        class="datasetsSelect w-100" id="datasetsSelect">
                                                         <option value="publishing_country"> Country </option>
                                                         <option value="publisher"> Organisation </option>
                                                     </select>
@@ -68,16 +68,16 @@
                                                 </div>
 
                                                 <div id="publishing_country_datasets"
-                                                    class="col-md-12 datasetsDropdown">
+                                                    class="col-md-12 datasetsDropdown d-none">
                                                     <div id="datasets_country_dropdown" class="dropdownList"
-                                                        style="height: 250px !important;">
+                                                        style="height: 250px !important; width: 100%">
                                                         <!-- Countries rows will be inserted here -->
                                                     </div>
                                                 </div>
 
                                                 <div id="publisher_datasets" class="col-md-12 datasetsDropdown d-none">
                                                     <div id="datasets_organisation_dropdown" class="dropdownList"
-                                                        style="height: 250px !important">
+                                                        style="height: 250px !important; width: 100%;">
                                                         <!-- Organisations rows will be inserted here -->
                                                     </div>
                                                 </div>
@@ -102,7 +102,7 @@
                 </div>
 
                 <!-- Dashboard page 2 -->
-                <div class="row dashboardPage d-none" pageNumber="2">
+                <div class="row dashboardPage opacity" pageNumber="2">
                     <div class="col-md-12">
 
                         <!-- Specimens counter and progress -->
@@ -119,16 +119,16 @@
                                                     <select name="mode"
                                                         onchange=" switchMode(this.value + '_speciesCounter', 'speciesCounterDropdown'); drawGraph(this.form, 'draw_specimens', 'speciesCounterGraph', 'pie');
                                                 drawGraph(this.form, 'draw_specimens_progress', 'speciesProgressGraph');"
-                                                        class="datasetsSelect w-100">
+                                                        class="datasetsSelect w-100" id="specimensCounterSelect">
                                                         <option value="publishing_country"> Country </option>
                                                         <option value="publisher"> Organisation </option>
                                                     </select>
                                                 </div>
 
                                                 <div id="publishing_country_speciesCounter"
-                                                    class="col-md-12 speciesCounterDropdown">
+                                                    class="col-md-12 speciesCounterDropdown d-none">
                                                     <div id="specimens_counter_country_dropdown" class="dropdownList"
-                                                        style="height: 160px">
+                                                        style="height: 160px;">
                                                         <!-- Countries rows will be inserted here -->
                                                     </div>
                                                 </div>
@@ -136,7 +136,7 @@
                                                 <div id="publisher_speciesCounter"
                                                     class="col-md-12 speciesCounterDropdown d-none">
                                                     <div id="specimens_counter_organisation_dropdown"
-                                                        class="dropdownList" style="height: 160px">
+                                                        class="dropdownList" style="height: 160px;">
                                                         <!-- Organisations rows will be inserted here -->
                                                     </div>
                                                 </div>
@@ -150,7 +150,7 @@
                                                     <div class="col-md-12">
                                                         <div class="row">
                                                             <div id="speciesCounterGraph" class="col-md-12"
-                                                                style="height: 208px">
+                                                                style="height: 208px;">
                                                                 <!-- Graph will be loaded here -->
                                                             </div>
                                                         </div>
@@ -162,7 +162,7 @@
                                                     <div class="col-md-12">
                                                         <div class="row">
                                                             <div id="speciesProgressGraph" class="col-md-12"
-                                                                style="height: 208px">
+                                                                style="height: 208px;">
                                                                 <!-- Graph will be loaded here -->
                                                             </div>
                                                         </div>
@@ -189,14 +189,14 @@
                                                 <div class="col-md-12">
                                                     <select name="mode"
                                                         onchange=" switchMode(this.value + '_speciesCompare', 'speciesCompareDropdown'); drawGraph(this.form, 'draw_specimens', 'speciesCompareGraph', 'bar');"
-                                                        class="datasetsSelect w-100">
+                                                        class="datasetsSelect w-100" id="specimensCompareSelect">
                                                         <option value="publishing_country"> Country </option>
                                                         <option value="publisher"> Organisation </option>
                                                     </select>
                                                 </div>
 
                                                 <div id="publishing_country_speciesCompare"
-                                                    class="col-md-12 speciesCompareDropdown">
+                                                    class="col-md-12 speciesCompareDropdown d-none">
                                                     <div id="specimens_compare_country_dropdown" class="dropdownList"
                                                         style="height: 160px">
                                                         <!-- Countries rows will be inserted here -->
@@ -232,7 +232,7 @@
                 </div>
 
                 <!-- Dashboard page 3 -->
-                <div class="row  dashboardPage d-none" pageNumber="3">
+                <div class="row  dashboardPage opacity" pageNumber="3">
                     <div class="col-md-12">
                         <!-- Issues and flags -->
                         <div class="row pagePart">
@@ -247,14 +247,14 @@
                                                 <div class="col-md-12">
                                                     <select name="mode"
                                                         onchange=" switchMode(this.value + '_issueFlagsCounter', 'issueFlagsCounterDropdown'); drawGraph(this.form, 'draw_issues_and_flags', 'issueFlagsCounterGraph', null, 10);"
-                                                        class="datasetsSelect w-100">
+                                                        class="datasetsSelect w-100" id="issueFlagSelect">
                                                         <option value="publishing_country"> Country </option>
                                                         <option value="publisher"> Organisation </option>
                                                     </select>
                                                 </div>
 
                                                 <div id="publishing_country_issueFlagsCounter"
-                                                    class="col-md-12 issueFlagsCounterDropdown">
+                                                    class="col-md-12 issueFlagsCounterDropdown d-none">
                                                     <div id="issues_flags_country_dropdown" class="dropdownList"
                                                         style="height: 380px">
                                                         <!-- Countries rows will be inserted here -->
