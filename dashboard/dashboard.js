@@ -13,7 +13,7 @@ function drawGraph(form, method, target, type = null, return_length = null) {
     let formData = serializeFormData(form);
     let graph;
 
-    if (formData['options']) {
+    if (formData['options'] || method == 'draw_infrastructures_total') {
       graph = {
         'method': method,
         'mode': formData['mode'],
@@ -29,20 +29,6 @@ function drawGraph(form, method, target, type = null, return_length = null) {
         contentType: "application/json",
         success: function (result) {
           process(result);
-        }
-      });
-    } else if (method == 'draw_infrastructures_total') {
-      graph = {
-        'method': method
-      }
-
-      $.ajax({
-        type: "GET",
-        url: "https://sandbox.dissco.tech/api/v1/network-overview/get_graph",
-        data: { 'data': JSON.stringify(graph) },
-        contentType: "application/json",
-        success: function (result) {
-          process(result)
         }
       });
     } else {
@@ -113,7 +99,7 @@ function getCountriesList(country_code = null) {
     }
   });
 
-  function process(data, country_code = null) {
+  function process(data, country_code) {
     let datasetsDropdown = document.getElementById('datasets_country_dropdown');
     let specimensCounterDropdown = document.getElementById('specimens_counter_country_dropdown');
     let specimensCompareDropdown = document.getElementById('specimens_compare_country_dropdown');
@@ -167,7 +153,7 @@ function getCountriesList(country_code = null) {
       document.getElementById('specimensCompareSelect').value = 'publishing_country';
       document.getElementById('issueFlagSelect').value = 'publishing_country';
 
-      checkVisibleDropdowns(process_further());
+      checkVisibleDropdowns(process_further);
 
       function process_further() {
         /* Render graphs */
@@ -287,7 +273,7 @@ function checkVisibleDropdowns(callback = null) {
   }
 
   if (callback) {
-    callback;
+    callback();
   }
 }
 
