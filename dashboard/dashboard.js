@@ -9,35 +9,33 @@ $.ajaxSetup({
 });
 
 function drawGraph(form, method, target, type = null, return_length = null) {
-  if (target) {
-    let formData = serializeFormData(form);
-    let graph;
+  let formData = serializeFormData(form);
+  let graph;
 
-    if (formData['options'] || method == 'draw_infrastructures_total') {
-      graph = {
-        'method': method,
-        'mode': formData['mode'],
-        'request': formData['options'],
-        'type': type,
-        'return_length': return_length
+  if (formData['options'] || method == 'draw_infrastructures_total') {
+    graph = {
+      'method': method,
+      'mode': formData['mode'],
+      'request': formData['options'],
+      'type': type,
+      'return_length': return_length
+    }
+
+    $.ajax({
+      type: "GET",
+      url: "https://sandbox.dissco.tech/api/v1/network-overview/get_graph",
+      data: { 'data': JSON.stringify(graph) },
+      contentType: "application/json",
+      success: function (result) {
+        process(result);
       }
+    });
+  } else {
+    /* Empty target */
+    $('#' + target).empty();
 
-      $.ajax({
-        type: "GET",
-        url: "https://sandbox.dissco.tech/api/v1/network-overview/get_graph",
-        data: { 'data': JSON.stringify(graph) },
-        contentType: "application/json",
-        success: function (result) {
-          process(result);
-        }
-      });
-    } else {
-      /* Empty target */
-      $('#' + target).empty();
-
-      if (method == 'draw_issues_and_flags') {
-        document.getElementById('issueFlagsCounterTable').classList.add('d-none');
-      }
+    if (method == 'draw_issues_and_flags') {
+      document.getElementById('issueFlagsCounterTable').classList.add('d-none');
     }
   }
 
@@ -95,11 +93,11 @@ function getCountriesList(country_code = null) {
     url: "https://sandbox.dissco.tech/api/v1/network-overview/get_countries",
     contentType: "application/json",
     success: function (result) {
-      process(result, country_code);
+      process(result);
     }
   });
 
-  function process(data, country_code) {
+  function process(data) {
     let datasetsDropdown = document.getElementById('datasets_country_dropdown');
     let specimensCounterDropdown = document.getElementById('specimens_counter_country_dropdown');
     let specimensCompareDropdown = document.getElementById('specimens_compare_country_dropdown');
