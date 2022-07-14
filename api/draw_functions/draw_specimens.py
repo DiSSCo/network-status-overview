@@ -57,7 +57,8 @@ def prepare_draw_specimens_bar_country(publishing_countries: dict) -> list:
             },
             'text': bor,
             'textposition': 'inside',
-            'insidetextanchor': 'start'
+            'insidetextanchor': 'start',
+            'hovertemplate': f"<b>{y[bor]}</b><extra></extra>"
         })
 
         i += 1
@@ -99,7 +100,8 @@ def prepare_draw_specimens_bar_organisation(publishers: dict) -> list:
             },
             'text': bor,
             'textposition': 'inside',
-            'insidetextanchor': 'start'
+            'insidetextanchor': 'start',
+            'hovertemplate': f"<b>{y[bor]}</b><extra>"
         })
 
         i += 1

@@ -132,3 +132,10 @@
     overflow: auto;
     background-color: white;
 }
+
+.rorLink {
+    color: inherit;
+    text-decoration: none;
+    font-size: 15px;
+    margin-left: 4%;
+}

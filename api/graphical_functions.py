@@ -39,18 +39,24 @@ def draw_infrastructures_total() -> list:
 
     # Search for total GBIF datasets via
     publishing_countries = query_database.select_countries_data([])
+
     publishing_countries.pop('Total')
 
     # Count for total amount of datasets
     total_datasets = 0
+    gbif_specimen_total = 0
+    geocase_specimen_total = 0
 
     for country in publishing_countries:
         total_datasets += publishing_countries[country][total_datasets_str]
 
+        gbif_specimen_total += int(publishing_countries[country]['gbif_total'])
+        geocase_specimen_total += int(publishing_countries[country]['geocase_total'])
+
     graph_data = [{
         'type': 'table',
         'header': {
-            'values': ['Infrastructure', 'Total count', 'Percent'],
+            'values': ['Infrastructure', 'Total datasets', 'Total specimens', 'Percentage'],
             'fill': {
                 'color': '#205692'
             },
@@ -60,7 +66,13 @@ def draw_infrastructures_total() -> list:
             }
         },
         'cells': {
-            'values': [['GBIF', 'GeoCASe'], total_datasets, '100%'],
+            'values': [
+                ['GBIF', 'GeoCASe'],
+                [total_datasets, 'NA'],
+                [gbif_specimen_total, geocase_specimen_total],
+                [f"{round(gbif_specimen_total / (gbif_specimen_total + geocase_specimen_total) * 100, 2)}%",
+                 f"{round(geocase_specimen_total / (gbif_specimen_total + geocase_specimen_total) * 100, 2)}%"]
+            ],
             'fill': {
                 'color': '#ffffff'
             },
@@ -145,7 +157,7 @@ def draw_datasets(mode: str, request_list: list) -> list:
         'margin': {
             'l': 0,
             'r': 0,
-            'b': 0,
+            'b': 20,
             't': 0
         }
     }
@@ -189,19 +201,17 @@ def draw_specimens(mode: str, request_list: list, method: str) -> list:
             'barmode': 'stack',
             'showlegend': False,
             'bargap': 0.3,
-            'hovermode': False,
+            'hovermode': True,
             'xaxis': {
-                'fixedrange': True,
-                # 'showticklabels': False
+                'fixedrange': True
             },
             'yaxis': {
-                'fixedrange': True,
-                # 'showticklabels': False
+                'fixedrange': True
             },
             'margin': {
                 'l': 0,
                 'r': 0,
-                'b': 0,
+                'b': 18,
                 't': 0
             }
         }
@@ -212,6 +222,7 @@ def draw_specimens(mode: str, request_list: list, method: str) -> list:
         if mode == 'publishing_country':
             # Prepare publishing country data
             publishing_countries = query_database.select_countries_data(request_list)
+
             publishing_countries.pop('Total')
 
             plot_data = prep_draw_specimens.prepare_draw_specimens_pie_country(publishing_countries)
@@ -427,6 +438,7 @@ def draw_specimens_progress(mode: str, request_list: list) -> list:
         return []
 
     graph_data: list = []
+    i = 0
 
     for bor in plot_data[1]:
         graph_data.append({
@@ -434,8 +446,13 @@ def draw_specimens_progress(mode: str, request_list: list) -> list:
             'y': plot_data[1][bor],
             'type': 'scatter',
             'mode': 'lines',
-            'name': bor
+            'name': bor,
+            'line': {
+                'color': colors[i]
+            }
         })
+
+        i += 1
 
     graph_layout = {
         'plot_bgcolor': "#FFF",
@@ -444,8 +461,7 @@ def draw_specimens_progress(mode: str, request_list: list) -> list:
         },
         'yaxis': {
             'fixedrange': True,
-            'visible': False,
-            # 'color': '#333333'
+            'visible': False
         },
         'margin': {
             'l': 6,

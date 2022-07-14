@@ -66,6 +66,8 @@ def prepare_country(global_data: dict, country: list, country_code: str) -> dict
     """
 
     global_data[country_code] = {}
+    global_data[country_code]['gbif_total'] = 0
+    global_data[country_code]['geocase_total'] = 0
 
     # Add GBIF datasets
     global_data[country_code][sonar_constant_datasets] = country[4]['gbif']
@@ -73,6 +75,7 @@ def prepare_country(global_data: dict, country: list, country_code: str) -> dict
     # General totals
     global_data['Total'] += int(country[5]['gbif']['total'])
     global_data[country_code]['Total'] = int(country[5]['gbif']['total'])
+    global_data[country_code]['gbif_total'] += int(country[5]['gbif']['total'])
 
     # Add GBIF basis of record
     global_data[country_code]['FOSSIL_SPECIMEN'] = country[5]['gbif']['FOSSIL_SPECIMEN']
@@ -85,6 +88,7 @@ def prepare_country(global_data: dict, country: list, country_code: str) -> dict
         # Add GeoCASe numbers to GBIF total
         global_data['Total'] += int(country[5]['geocase']['total'])
         global_data[country_code]['Total'] += int(country[5]['geocase']['total'])
+        global_data[country_code]['geocase_total'] += int(country[5]['geocase']['total'])
 
         # Check if country has fossil specimens in GeoCASe
         if int(country[5]['geocase']['Fossil']) > 0:
@@ -97,6 +101,7 @@ def prepare_country(global_data: dict, country: list, country_code: str) -> dict
                 # Remove GBIF fossil records from grand total
                 global_data[country_code]['Total'] -= int(country[5]['gbif']['FOSSIL_SPECIMEN'])
                 global_data['Total'] -= int(country[5]['gbif']['FOSSIL_SPECIMEN'])
+                global_data[country_code]['gbif_total'] -= int(country[5]['gbif']['FOSSIL_SPECIMEN'])
 
         # Update with other record basis
         global_data[country_code]['METEORITE'] = country[5]['geocase']['Meteorite']
@@ -108,6 +113,7 @@ def prepare_country(global_data: dict, country: list, country_code: str) -> dict
         for value in islice(country[5]['geocase'].values(), 1, 6):
             global_data[country_code]['Total'] += int(value)
             global_data['Total'] += int(value)
+            global_data[country_code]['geocase_total'] += int(value)
     else:
         # Update countries out of GeoCASe
         global_data[country_code]['METEORITE'] = 0
@@ -437,6 +443,8 @@ def select_organisations_data(request_list: list, month: Union[str, list] = curr
 
     with db_config.connect() as conn:
         organisations_data = conn.execute(query).fetchall()
+
+    print(organisations_data)
 
     # Set up basic response element
     global_data: dict = {

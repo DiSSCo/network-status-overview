@@ -193,12 +193,14 @@ function getOrganisationsList() {
       let organisation = data[o];
       organisation['ror'] = organisation['ror'].replace('https://ror.org/', '');
 
+      let link = "<a href='' class='rorLink'> " + organisation['ror'] + ' </a>'
+
       /* Set drop downs */
       let dropDownRow = "<label class='dropdown-item'> <input type='checkbox' name='options[]' value='";
 
       // Datasets
       id = 'datasets' + organisation['ror'];
-      datasetsDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='datasetsOption'> " + organisation['name'] + " </label>";
+      datasetsDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='datasetsOption'> " + organisation['name'] + " </label>" + link;
 
       $('.dropdownList').on('click', '#' + id, function () {
         checkOptions(this.id, 'datasetsOption', 4);
@@ -207,13 +209,13 @@ function getOrganisationsList() {
 
       // Specimens Count / Progress
       id = 'speciesCounterOption' + organisation['ror'];
-      specimensCounterDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCounterOption'> " + organisation['name'] + " </label>";
+      specimensCounterDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCounterOption'> " + organisation['name'] + " </label>" + link;
 
       appendPieToDropdownList(id);
 
       // Specimen Comparison
       id = 'speciesCompareOption' + organisation['ror'];
-      specimensCompareDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCompareOption'> " + organisation['name'] + " </label>";
+      specimensCompareDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='speciesCompareOption'> " + organisation['name'] + " </label>" + link;
 
       $('.dropdownList').on('click', '#' + id, function () {
         checkOptions(this.id, 'speciesCompareOption', 4);
@@ -222,7 +224,7 @@ function getOrganisationsList() {
 
       // Issues and Flags
       id = 'issueFlagsCounterOption' + organisation['ror'];
-      issuesFlagsDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='issueFlagsCounterOption'> " + organisation['name'] + " </label>";
+      issuesFlagsDropdown.innerHTML += dropDownRow + organisation['ror'] + "' id='" + id + "' class='issueFlagsCounterOption'> " + organisation['name'] + " </label>" + link;
 
       $('.dropdownList').on('click', '#' + id, function () {
         checkOptions(this.id, 'issueFlagsCounterOption', 1);
