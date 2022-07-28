@@ -1,3 +1,7 @@
+/* File contains some amounts of CSS related to the lay-out and spacing of the dashboard
+This was done mostly for the integration with Wordpress
+The lay-out and spacing can be optimized in the future, preferably with Bootstrap */
+
 .dashboardSection {
     height: 500px;
     padding-top: none !important;

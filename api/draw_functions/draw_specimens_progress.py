@@ -1,18 +1,14 @@
 from datetime import datetime as dt
 import calendar
 
+import sys
+sys.path.append("../")
+import constants
+
 
 # List of used specimen types
-basis_of_record = [
-    'PRESERVED_SPECIMEN',
-    'FOSSIL_SPECIMEN',
-    'LIVING_SPECIMEN',
-    'MATERIAL_SAMPLE',
-    'METEORITE',
-    'MINERAL',
-    'ROCK',
-    'OTHER_GEOLOGICAL'
-]
+basis_of_record = constants.basis_of_record
+
 # List the months of the year
 months = list(calendar.month_name)[1:]
 

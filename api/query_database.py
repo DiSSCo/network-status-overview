@@ -14,7 +14,7 @@ import model.organisations
 current_month = dt.now().strftime('%B')
 
 # Sonar constant
-sonar_constant_datasets = 'Total datasets'
+datasets_constant = 'Total datasets'
 
 # Temporary mapping between GBIF and GeoCASe
 country_mapping = {
@@ -70,7 +70,7 @@ def prepare_country(global_data: dict, country: list, country_code: str) -> dict
     global_data[country_code]['geocase_total'] = 0
 
     # Add GBIF datasets
-    global_data[country_code][sonar_constant_datasets] = country[4]['gbif']
+    global_data[country_code][datasets_constant] = country[4]['gbif']
 
     # General totals
     global_data['Total'] += int(country[5]['gbif']['total'])
@@ -144,7 +144,7 @@ def prepare_countries(global_data: dict, country: list, country_code: str) -> di
     global_data[country_code][month] = {}
 
     # Add GBIF datasets
-    global_data[country_code][month][sonar_constant_datasets] = country[4]['gbif']
+    global_data[country_code][month][datasets_constant] = country[4]['gbif']
 
     # Add GBIF basis of record
     global_data[country_code][month]['FOSSIL_SPECIMEN'] = country[5]['gbif']['FOSSIL_SPECIMEN']
@@ -263,7 +263,7 @@ def prepare_organisation(global_data: dict, organisation: list, ror_id: str, org
     global_data[ror_id] = {}
 
     # Add GBIF datasets
-    global_data[ror_id][sonar_constant_datasets] = organisation[4]['gbif']
+    global_data[ror_id][datasets_constant] = organisation[4]['gbif']
     global_data[ror_id]['organisation_name'] = organisation_name
 
     # Add GBIF basis of record
@@ -340,7 +340,7 @@ def prepare_organisations(global_data: dict, organisation: list, ror_id: str, or
     global_data[ror_id][month] = {}
 
     # Add GBIF datasets
-    global_data[ror_id][month][sonar_constant_datasets] = organisation[4]['gbif']
+    global_data[ror_id][month][datasets_constant] = organisation[4]['gbif']
     global_data[ror_id]['organisation_name'] = organisation_name
 
     # Add GBIF basis of record

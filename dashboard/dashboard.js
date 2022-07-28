@@ -23,7 +23,7 @@ function drawGraph(form, method, target, type = null, return_length = null) {
 
     $.ajax({
       type: "GET",
-      url: "https://sandbox.dissco.tech/api/v1/network-overview/get_graph",
+      url: "https://sandbox.dissco.tech/api/v1/network-overview/graph",
       data: { 'data': JSON.stringify(graph) },
       contentType: "application/json",
       success: function (result) {
@@ -90,8 +90,7 @@ function getCountriesList(country_code = null) {
   /* Receive countries data */
   $.ajax({
     type: "GET",
-    url: "https://sandbox.dissco.tech/api/v1/network-overview/get_countries",
-    contentType: "application/json",
+    url: "https://sandbox.dissco.tech/api/v1/network-overview/countries",
     success: function (result) {
       process(result);
     }
@@ -174,8 +173,7 @@ function getCountriesList(country_code = null) {
 function getOrganisationsList() {
   $.ajax({
     type: "GET",
-    url: "https://sandbox.dissco.tech/api/v1/network-overview/get_organisations",
-    contentType: "application/json",
+    url: "https://sandbox.dissco.tech/api/v1/network-overview/organisations",
     success: function (result) {
       process(result);
     }

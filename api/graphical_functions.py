@@ -8,6 +8,11 @@ import draw_functions.draw_issues_flags_progress as prep_draw_issues_flags_progr
 import draw_functions.draw_issues_flags as prep_draw_issues_flags
 import draw_functions.draw_specimens_progress as prep_draw_specimens_progress
 
+import constants
+
+
+colors = constants.colors
+
 
 # Message for when no mode is selected
 no_mode_message = 'No valid mode is selected'
@@ -17,19 +22,6 @@ current_month = dt.now().strftime('%B')
 
 # SonarLint: define constant instead of literal
 total_datasets_str = 'Total datasets'
-
-# Color schema used in the graphs
-colors = [
-    '#cc0000',
-    '#39ac39',
-    '#e68a00',
-    '#aa80ff',
-    '#0099cc',
-    '#e6e600',
-    '#ffbf00',
-    '#ffccff'
-]
-
 
 def draw_infrastructures_total() -> list:
     """ Calls on the data belonging to the relative infrastructures (GBIF and GeoCASe)

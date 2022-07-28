@@ -1,26 +1,10 @@
-# Color schema used in the graphs
-colors = [
-    '#cc0000',
-    '#39ac39',
-    '#e68a00',
-    '#aa80ff',
-    '#0099cc',
-    '#e6e600',
-    '#ffbf00',
-    '#ffccff'
-]
+import sys
+sys.path.append("../constants.py")
+import constants
 
-# List of used specimen types
-basis_of_record = [
-    'PRESERVED_SPECIMEN',
-    'FOSSIL_SPECIMEN',
-    'LIVING_SPECIMEN',
-    'MATERIAL_SAMPLE',
-    'METEORITE',
-    'MINERAL',
-    'ROCK',
-    'OTHER_GEOLOGICAL'
-]
+
+colors = constants.colors
+basis_of_record = constants.basis_of_record
 
 
 def prepare_draw_specimens_bar_country(publishing_countries: dict) -> list:

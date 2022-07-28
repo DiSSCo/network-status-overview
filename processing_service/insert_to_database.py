@@ -8,9 +8,18 @@ from datetime import datetime as dt
 import model.countries
 import model.organisations
 
-
 # Setting the current month
 current_month = dt.now().strftime('%B')
+
+# Temporary mapping between GBIF and GeoCASe
+country_mapping = {
+    'DE': 'Germany',
+    'GB': 'UK',
+    'EE': 'Estonia',
+    'AT': 'Austria',
+    'FI': 'Finland',
+    'NL': 'The Netherlands'
+}
 
 # Temporary mapping between GBIF and GeoCASe
 organisation_mapping = {
@@ -51,16 +60,6 @@ def insert_countries_data(gbif_datasets: dict, gbif_specimens: dict, gbif_issues
     """ Transforms the received countries' data to a standardised format
         Saves the formatted data in the database by insert or update
     """
-
-    # Temporary mapping between GBIF and GeoCASe
-    country_mapping = {
-        'DE': 'Germany',
-        'GB': 'UK',
-        'EE': 'Estonia',
-        'AT': 'Austria',
-        'FI': 'Finland',
-        'NL': 'The Netherlands'
-    }
 
     # For each organisation, prepare and save data to database
     for country in gbif_datasets['countries']:

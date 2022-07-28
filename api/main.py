@@ -1,19 +1,18 @@
 import plotly.utils
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_wtf.csrf import CSRFProtect
 import json
 import requests
 
+
 import graphical_functions
 
+
 app = Flask(__name__)
-CORS(app, allow_headers=['Content-Type', 'Access-Control-Allow-Origin',
-                         'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'])
-CSRFProtect(app)
+CORS(app, allow_headers=['Content-Type'])
 
 
-@app.route('/get_graph', methods=['GET'])
+@app.route('/graph', methods=['GET'])
 def draw_graph():
     """ Receives the data from the view and decides which graph needs to be drawn
         Send data to the draw_functions_menu function for further execution
@@ -69,7 +68,7 @@ def draw_functions_menu(method: str, mode: str, r: list, return_length: int, bar
     return fig
 
 
-@app.route('/get_organisations', methods=['GET'])
+@app.route('/organisations', methods=['GET'])
 def get_organisations():
     """ Retrieves the list of organisations from the database
         :return: The organisations list
@@ -80,33 +79,16 @@ def get_organisations():
     return jsonify(response.json())
 
 
-@app.route('/get_countries', methods=['GET'])
+@app.route('/countries', methods=['GET'])
 def get_countries():
     """ Creates the list of countries
         :return: The organisations list
     """
 
-    # List needs to be created from valid source
-    countries_list = {'AT': 'Austria',
-                      'BE': 'Belgium',
-                      'BG': 'Bulgaria',
-                      'CZ': 'Czech Republic',
-                      'DK': 'Denmark',
-                      'EE': 'Estonia',
-                      'FI': 'Finland',
-                      'FR': 'France',
-                      'DE': 'Germany',
-                      'EL': 'Greece',
-                      'HU': 'Hungary',
-                      'IT': 'Italy',
-                      'LU': 'Luxembourg',
-                      'NL': 'Netherlands',
-                      'NO': 'Norway',
-                      'PL': 'Poland',
-                      'PT': 'Portugal',
-                      'SK': 'Slovakia',
-                      'ES': 'Spain',
-                      'SE': 'Sweden',
-                      'GB': 'United Kingdom'}
+    response = requests.get('https://sandbox.dissco.tech/api/v1/organisation/countries')
+    countries_list: dict = {}
+
+    for r in response.json():
+        countries_list[r['countryCode']] = r['country']
 
     return jsonify(countries_list)
