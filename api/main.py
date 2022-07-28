@@ -1,6 +1,7 @@
 import plotly.utils
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_wtf.csrf import CSRFProtect
 import json
 import requests
 
@@ -10,6 +11,8 @@ import graphical_functions
 
 app = Flask(__name__)
 CORS(app, allow_headers=['Content-Type'])
+
+CSRFProtect(app)
 
 
 @app.route('/graph', methods=['GET'])
