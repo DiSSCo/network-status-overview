@@ -8,7 +8,7 @@ WORKDIR /code
 RUN adduser --disabled-password --gecos '' --system --uid 1001 python && chown -R python /code
 
 # Copy the dependencies file to the working directory
-COPY requirements.txt .
+COPY processing_service/requirements.txt .
 
 # Install dependencies
 RUN apt-get update \
@@ -16,10 +16,15 @@ RUN apt-get update \
     && python3 -m pip install -r requirements.txt
 
 # Copy the content of the local src directory to the working directory
-COPY main2.py ./
+COPY processing_service /processing_service
+
+# Copy file requirements
+COPY database.ini .
+COPY model /processing_service/model
+COPY sources/microchanges.csv .
 
 # Set user to newly created user
 USER 1001
 
 # Command to run on container start
-CMD [ 'python', './main2.py' ]
+CMD [ "python", "/processing_service/main.py" ]

@@ -2,6 +2,7 @@ import requests
 
 
 geocase_endpoint = "https://geocase.eu/api"
+facet_field_constant = 'facet.field'
 
 
 def gather_data() -> dict:
@@ -21,7 +22,7 @@ def gather_data() -> dict:
     query: dict = {
         'q': '*',
         'rows': 0,
-        'facet.field': [
+        facet_field_constant: [
             'providercountry'
         ],
         'facet': 'on'
@@ -50,7 +51,7 @@ def gather_data() -> dict:
             'q': '*',
             'fq': '{!tag=providercountry}providercountry:(\"' + country_name + '\")',
             'rows': 0,
-            'facet.field': [
+            facet_field_constant: [
                 'recordbasis'
             ],
             'facet': 'on'
@@ -97,7 +98,7 @@ def gather_publishers() -> dict:
     query: dict = {
         'q': '*',
         'rows': 0,
-        'facet.field': [
+        facet_field_constant: [
             'providername'
         ],
         'facet': 'on'
@@ -140,7 +141,7 @@ def query_on_record_basis(provider_name: str, publishers: dict, record_basis: li
         'q': '*',
         'fq': '{!tag=providername}providername:(\"' + provider_name + '\")',
         'rows': 0,
-        'facet.field': [
+        facet_field_constant: [
             'recordbasis'
         ],
         'facet': 'on'
